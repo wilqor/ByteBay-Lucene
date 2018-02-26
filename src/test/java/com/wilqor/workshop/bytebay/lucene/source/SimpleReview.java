@@ -10,7 +10,7 @@ import lombok.*;
 @EqualsAndHashCode
 public class SimpleReview {
 
-    String userName;
-    Thumb thumb;
-    String articleName;
+    protected String userName;
+    protected Thumb thumb;
+    protected String articleName;
 }
