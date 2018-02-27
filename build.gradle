@@ -1,19 +1,41 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "io.franzbecker:gradle-lombok:1.10"
+    }
+}
+
 group 'com.wilqor.workshop.bytebay'
 version '1.0'
 
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: "io.franzbecker.gradle-lombok"
 
 sourceCompatibility = 1.8
+
 
 repositories {
     mavenCentral()
 }
 
+
 dependencies {
     // Lucene dependencies
     compile 'org.apache.lucene:lucene-core:7.2.1'
     compile 'org.apache.lucene:lucene-analyzers-common:7.2.1'
+
+    //Lombok
+    compileOnly 'org.projectlombok:lombok:1.16.20'
+
+    //Json
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.4'
+
+
     // test dependencies
     testCompile 'junit:junit:4.12'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
