@@ -11,24 +11,20 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Source<T> {
-
     public static Source<SimpleReview> SIMPLE_MODEL = new Source<>("simple_model.json.batch", SimpleReview.class);
     public static Source<CommentedReview> COMMENTED_MODEL = new Source<>("commented_model.json.batch", CommentedReview.class);
 
     private final String fileName;
-    private Class<T> entityClass;
-
+    private final Class<T> entityClass;
 
     Source(String fileName, Class<T> entityClass) {
         this.fileName = fileName;
-
         this.entityClass = entityClass;
     }
 
     public Stream<T> stream() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-
             Path dataSource = Paths.get(Thread.currentThread().getContextClassLoader().getResource(fileName).toURI());
             return Files.lines(dataSource)
                     .map(line -> {
@@ -43,14 +39,8 @@ public class Source<T> {
         }
     }
 
-
     public static void main(String[] args) {
         List<CommentedReview> reviews = Source.COMMENTED_MODEL.stream().collect(Collectors.toList());
-
         reviews.forEach(System.out::println);
-
     }
 }
-
-
-
