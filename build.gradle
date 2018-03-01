@@ -39,6 +39,9 @@ dependencies {
     compile 'org.apache.logging.log4j:log4j-api:2.7'
     compile 'org.apache.logging.log4j:log4j-core:2.7'
 
+    // Yaml
+    compile 'org.yaml:snakeyaml:1.19'
+
     // test dependencies
     testCompile 'junit:junit:4.12'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
