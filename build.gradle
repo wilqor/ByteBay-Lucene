@@ -29,12 +29,15 @@ dependencies {
     compile 'org.apache.lucene:lucene-core:7.2.1'
     compile 'org.apache.lucene:lucene-analyzers-common:7.2.1'
 
-    //Lombok
+    // Lombok
     compileOnly 'org.projectlombok:lombok:1.16.20'
 
-    //Json
+    // Json
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.4'
 
+    // Logging
+    compile 'org.apache.logging.log4j:log4j-api:2.7'
+    compile 'org.apache.logging.log4j:log4j-core:2.7'
 
     // test dependencies
     testCompile 'junit:junit:4.12'

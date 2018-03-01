@@ -19,7 +19,7 @@ import java.io.IOException;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class BasicReadingTest extends RAMDirectoryReadingTest {
+public class ExampleReadingTest extends RAMDirectoryReadingTest {
     private static final String AGE_FIELD = "age";
     private static final String NAME_FIELD = "name";
     private static final int MAX_MATCHES = 10;
