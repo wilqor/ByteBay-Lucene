@@ -1,6 +1,8 @@
 package com.wilqor.workshop.bytebay.lucene.source;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Source<T> {
+    private static final Logger LOGGER = LogManager.getLogger(Source.class);
     public static Source<SimpleReview> SIMPLE_MODEL = new Source<>("simple_model.json.batch", SimpleReview.class);
     public static Source<CommentedReview> COMMENTED_MODEL = new Source<>("commented_model.json.batch", CommentedReview.class);
 
@@ -41,6 +44,6 @@ public class Source<T> {
 
     public static void main(String[] args) {
         List<CommentedReview> reviews = Source.COMMENTED_MODEL.stream().collect(Collectors.toList());
-        reviews.forEach(System.out::println);
+        reviews.forEach(review -> LOGGER.info("Loaded review: {}", review));
     }
 }
