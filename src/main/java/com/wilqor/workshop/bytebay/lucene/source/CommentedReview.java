@@ -6,7 +6,7 @@ import lombok.ToString;
 
 @Getter
 @ToString(callSuper = true)
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public class CommentedReview extends SimpleReview {
     String content;
 }
