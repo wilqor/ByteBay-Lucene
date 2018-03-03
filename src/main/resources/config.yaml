@@ -2,4 +2,5 @@ rootDirectory: '/home/wilqor/workspaces/Lucene/'
 indexDirectories:
   KEYWORD_ANALYZER_EXAMPLE: 'keyword_analyzer'
   FACETING_EXAMPLE: 'faceting'
+  WHITESPACE_ANALYZER_EXAMPLE: 'whitespace_analyzer'
 
