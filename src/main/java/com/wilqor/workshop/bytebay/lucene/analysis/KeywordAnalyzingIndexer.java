@@ -32,7 +32,7 @@ public class KeywordAnalyzingIndexer implements Indexer<SimpleReview> {
 
     KeywordAnalyzingIndexer(Path targetDirectory) throws IOException {
         directory = FSDirectory.open(targetDirectory);
-        LOGGER.info("Opened index in directory: {}", targetDirectory);
+        LOGGER.info("Opened index in directory: {}", directory.getDirectory());
         analyzer = new KeywordAnalyzer();
         indexWriter = new IndexWriter(directory, new IndexWriterConfig(analyzer));
     }
