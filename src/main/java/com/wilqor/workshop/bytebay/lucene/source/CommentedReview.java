@@ -8,5 +8,5 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class CommentedReview extends SimpleReview {
-    String content;
+    String comment;
 }
