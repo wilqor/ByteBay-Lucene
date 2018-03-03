@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 public class KeywordAnalyzingIndexer implements Indexer<SimpleReview> {
-    private static final Logger LOGGER = LogManager.getLogger(ConfigLoader.class);
+    private static final Logger LOGGER = LogManager.getLogger(KeywordAnalyzingIndexer.class);
 
     static final String USER_NAME_FIELD = "user_name";
     static final String THUMB_FIELD = "thumb";
