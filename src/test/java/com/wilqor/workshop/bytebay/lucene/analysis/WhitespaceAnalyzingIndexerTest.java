@@ -62,4 +62,36 @@ public class WhitespaceAnalyzingIndexerTest extends FSDirectoryReadingTest {
 
         assertThat(topDocs.totalHits, is(2L));
     }
+
+    @Test
+    public void shouldRetrieveReviewsForEmoteInComment() throws Exception {
+        Query query = new TermQuery(new Term(WhitespaceAnalyzingIndexer.COMMENT_FIELD, ":)"));
+        TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
+
+        assertThat(topDocs.totalHits, is(1L));
+    }
+
+    @Test
+    public void shouldRetrieveZeroReviewsForTermBeforeHyphenInComment() throws Exception {
+        Query query = new TermQuery(new Term(WhitespaceAnalyzingIndexer.COMMENT_FIELD, "cud"));
+        TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
+
+        assertThat(topDocs.totalHits, is(0L));
+    }
+
+    @Test
+    public void shouldRetrieveZeroReviewsForTermAfterHyphenInComment() throws Exception {
+        Query query = new TermQuery(new Term(WhitespaceAnalyzingIndexer.COMMENT_FIELD, "miód"));
+        TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
+
+        assertThat(topDocs.totalHits, is(0L));
+    }
+
+    @Test
+    public void shouldRetrieveReviewsForTermWithHyphenInComment() throws Exception {
+        Query query = new TermQuery(new Term(WhitespaceAnalyzingIndexer.COMMENT_FIELD, "cud-miód"));
+        TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
+
+        assertThat(topDocs.totalHits, is(1L));
+    }
 }
