@@ -28,9 +28,9 @@ public class FacetingIndexer implements Indexer<SimpleReview> {
     static final String INDEX_SUBDIRECTORY_NAME = "index";
     static final String TAXONOMY_SUBDIRECTORY_NAME = "taxonomy";
 
-    static final String USER_NAME_FACET_FIELD = "USER_NAME";
-    static final String THUMB_FACET_FIELD = "THUMB";
-    static final String ARTICLE_FACET_FIELD = "ARTICLE_NAME";
+    static final String USER_NAME_FACET_FIELD = "user_name";
+    static final String THUMB_FACET_FIELD = "thumb";
+    static final String ARTICLE_FACET_FIELD = "article_name";
 
     private static final Logger LOGGER = LogManager.getLogger(FacetingIndexer.class);
 
