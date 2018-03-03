@@ -24,7 +24,7 @@ public class KeywordAnalyzingIndexerTest extends FSDirectoryReadingTest {
     }
 
     @Test
-    public void shouldHaveIndexedAllComments() throws Exception {
+    public void shouldHaveIndexedAllReviews() throws Exception {
         Query query = new MatchAllDocsQuery();
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
@@ -32,7 +32,7 @@ public class KeywordAnalyzingIndexerTest extends FSDirectoryReadingTest {
     }
 
     @Test
-    public void shouldRetrieveCommentsByUserName() throws Exception {
+    public void shouldRetrieveReviewsByUserName() throws Exception {
         Query query = new TermQuery(new Term(KeywordAnalyzingIndexer.USER_NAME_FIELD, "zbyszkop"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
@@ -40,7 +40,7 @@ public class KeywordAnalyzingIndexerTest extends FSDirectoryReadingTest {
     }
 
     @Test
-    public void shouldRetrieveZeroCommentsForPartialArticleName() throws Exception {
+    public void shouldRetrieveZeroReviewsForPartialArticleName() throws Exception {
         Query query = new TermQuery(new Term(KeywordAnalyzingIndexer.ARTICLE_NAME_FIELD, "lucene"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
@@ -48,7 +48,7 @@ public class KeywordAnalyzingIndexerTest extends FSDirectoryReadingTest {
     }
 
     @Test
-    public void shouldRetrieveZeroCommentsForArticleNameWithDifferentCase() throws Exception {
+    public void shouldRetrieveZeroReviewsForArticleNameWithDifferentCase() throws Exception {
         Query query = new TermQuery(new Term(KeywordAnalyzingIndexer.ARTICLE_NAME_FIELD, "lucene 101"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
@@ -56,7 +56,7 @@ public class KeywordAnalyzingIndexerTest extends FSDirectoryReadingTest {
     }
 
     @Test
-    public void shouldRetrieveCommentsForArticleNameWithMatchingCase() throws Exception {
+    public void shouldRetrieveReviewsForArticleNameWithMatchingCase() throws Exception {
         Query query = new TermQuery(new Term(KeywordAnalyzingIndexer.ARTICLE_NAME_FIELD, "Lucene 101"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
