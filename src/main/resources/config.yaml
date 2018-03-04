@@ -4,4 +4,5 @@ indexDirectories:
   FACETING_EXAMPLE: 'faceting'
   WHITESPACE_ANALYZER_EXAMPLE: 'whitespace_analyzer'
   STANDARD_ANALYZER_EXAMPLE: 'standard_analyzer'
+  LOWER_CASE_TOKEN_FILTER_EXAMPLE: 'lower_case_token_filter'
 
