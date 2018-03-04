@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class StandardAnalysisIndexerTest extends FSDirectoryReadingTest {
+public class StandardAnalysisTest extends FSDirectoryReadingTest {
     private static final int QUERY_MATCHES_LIMIT = 3;
 
     @Override
