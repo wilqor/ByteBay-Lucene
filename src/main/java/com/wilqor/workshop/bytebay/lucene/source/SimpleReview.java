@@ -9,7 +9,6 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 public class SimpleReview {
-
     protected String userName;
     protected Thumb thumb;
     protected String articleName;
