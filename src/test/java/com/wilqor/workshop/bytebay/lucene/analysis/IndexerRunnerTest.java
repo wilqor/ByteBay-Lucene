@@ -38,7 +38,7 @@ public class IndexerRunnerTest {
     @Before
     public void setUp() throws Exception {
         indexRootDirectory = temporaryFolder.newFolder().toPath();
-        indexerRunner = new IndexerRunner<>(
+        indexerRunner = IndexerRunner.of(
                 indexRootDirectory,
                 () -> new DummyIndexer(indexRootDirectory),
                 () -> Stream.of(

@@ -17,7 +17,7 @@ public class IndexerRunner<T> {
     private final Supplier<Indexer<T>> indexerSupplier;
     private final Source<T> dataSource;
 
-    public IndexerRunner(Path indexRootDirectory, Supplier<Indexer<T>> indexerSupplier, Source<T> dataSource) {
+    private IndexerRunner(Path indexRootDirectory, Supplier<Indexer<T>> indexerSupplier, Source<T> dataSource) {
         this.indexRootDirectory = indexRootDirectory;
         this.indexerSupplier = indexerSupplier;
         this.dataSource = dataSource;
@@ -37,5 +37,9 @@ public class IndexerRunner<T> {
             indexer.index(dataSource);
             LOGGER.info("Indexing complete");
         }
+    }
+
+    static <T> IndexerRunner<T> of(Path indexRootDirectory, Supplier<Indexer<T>> indexerSupplier, Source<T> dataSource) {
+        return new IndexerRunner<>(indexRootDirectory, indexerSupplier, dataSource);
     }
 }
