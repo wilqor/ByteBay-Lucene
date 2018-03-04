@@ -25,12 +25,12 @@ public class IndexerRunner<T> {
 
     public void runIndexer() throws Exception {
         if (Files.isDirectory(indexRootDirectory)) {
-            LOGGER.info("Index root directory \"{}\" exists, proceeding to clean up");
+            LOGGER.info("Index root directory \"{}\" exists, proceeding to clean up", indexRootDirectory);
             Files.walk(indexRootDirectory)
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
-            LOGGER.info("Index root directory \"{}\" cleared");
+            LOGGER.info("Index root directory \"{}\" cleared", indexRootDirectory);
         }
         try (Indexer<T> indexer = indexerSupplier.get()) {
             LOGGER.info("Starting indexing...");
