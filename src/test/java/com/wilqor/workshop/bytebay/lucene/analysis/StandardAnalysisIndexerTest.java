@@ -9,13 +9,12 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
-public class StandardAnalyzingIndexerTest extends FSDirectoryReadingTest {
+public class StandardAnalysisIndexerTest extends FSDirectoryReadingTest {
     private static final int QUERY_MATCHES_LIMIT = 3;
 
     @Override
@@ -25,7 +24,7 @@ public class StandardAnalyzingIndexerTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveZeroReviewsForFullArticleName() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalyzingIndexer.ARTICLE_NAME_FIELD, "Lucene 101"));
+        Query query = new TermQuery(new Term(CommentedReviewIndexer.ARTICLE_NAME_FIELD, "Lucene 101"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(0L));
@@ -33,7 +32,7 @@ public class StandardAnalyzingIndexerTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveReviewsForArticleNameTermWithLowerCase() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalyzingIndexer.ARTICLE_NAME_FIELD, "lucene"));
+        Query query = new TermQuery(new Term(CommentedReviewIndexer.ARTICLE_NAME_FIELD, "lucene"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(5L));
@@ -41,7 +40,7 @@ public class StandardAnalyzingIndexerTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveZeroReviewsForArticleNameTermWithUpperCase() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalyzingIndexer.ARTICLE_NAME_FIELD, "Lucene"));
+        Query query = new TermQuery(new Term(CommentedReviewIndexer.ARTICLE_NAME_FIELD, "Lucene"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(0L));
@@ -49,7 +48,7 @@ public class StandardAnalyzingIndexerTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveZeroReviewsForEmoteInComment() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalyzingIndexer.COMMENT_FIELD, ":)"));
+        Query query = new TermQuery(new Term(CommentedReviewIndexer.COMMENT_FIELD, ":)"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(0L));
@@ -57,7 +56,7 @@ public class StandardAnalyzingIndexerTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveZeroReviewsForTermWithHyphenInComment() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalyzingIndexer.COMMENT_FIELD, "cud-miód"));
+        Query query = new TermQuery(new Term(CommentedReviewIndexer.COMMENT_FIELD, "cud-miód"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(0L));
@@ -65,7 +64,7 @@ public class StandardAnalyzingIndexerTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveReviewsForTermBeforeHyphenInComment() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalyzingIndexer.COMMENT_FIELD, "cud"));
+        Query query = new TermQuery(new Term(CommentedReviewIndexer.COMMENT_FIELD, "cud"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(1L));
@@ -73,7 +72,7 @@ public class StandardAnalyzingIndexerTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveReviewsForTermAfterHyphenInComment() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalyzingIndexer.COMMENT_FIELD, "miód"));
+        Query query = new TermQuery(new Term(CommentedReviewIndexer.COMMENT_FIELD, "miód"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(1L));
