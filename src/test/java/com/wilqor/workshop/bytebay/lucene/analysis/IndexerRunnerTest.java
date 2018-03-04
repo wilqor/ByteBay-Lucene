@@ -1,6 +1,7 @@
 package com.wilqor.workshop.bytebay.lucene.analysis;
 
 import com.wilqor.workshop.bytebay.lucene.source.Source;
+import com.wilqor.workshop.bytebay.lucene.utils.ThrowingSupplier;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.document.Document;
@@ -38,9 +39,10 @@ public class IndexerRunnerTest {
     @Before
     public void setUp() throws Exception {
         indexRootDirectory = temporaryFolder.newFolder().toPath();
+        ThrowingSupplier<Indexer<DummyModel>> supplier = () -> new DummyIndexer(indexRootDirectory);
         indexerRunner = IndexerRunner.of(
                 indexRootDirectory,
-                () -> new DummyIndexer(indexRootDirectory),
+                supplier,
                 () -> Stream.of(
                         new DummyModel("1"),
                         new DummyModel("2"),
@@ -82,12 +84,8 @@ public class IndexerRunnerTest {
     private static class DummyIndexer implements Indexer<DummyModel> {
         private final Directory directory;
 
-        private DummyIndexer(Path indexRootDirectory) {
-            try {
-                directory = FSDirectory.open(indexRootDirectory);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        private DummyIndexer(Path indexRootDirectory) throws IOException {
+            directory = FSDirectory.open(indexRootDirectory);
         }
 
         @Override

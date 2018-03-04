@@ -4,6 +4,7 @@ import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
 import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.source.CommentedReview;
 import com.wilqor.workshop.bytebay.lucene.source.Source;
+import com.wilqor.workshop.bytebay.lucene.utils.ThrowingSupplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -70,8 +71,8 @@ public class WhitespaceAnalyzingIndexer implements Indexer<CommentedReview> {
     }
 
     public static void main(String[] args) throws Exception {
-        try (Indexer<CommentedReview> indexer = new WhitespaceAnalyzingIndexer(ConfigLoader.LOADER.getPathForIndex(IndexType.WHITESPACE_ANALYZER_EXAMPLE))) {
-            indexer.index(Source.COMMENTED_MODEL);
-        }
+        Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.WHITESPACE_ANALYZER_EXAMPLE);
+        ThrowingSupplier<Indexer<CommentedReview>> supplier = () -> new WhitespaceAnalyzingIndexer(pathForIndex);
+        IndexerRunner.of(pathForIndex, supplier, Source.COMMENTED_MODEL).runIndexer();
     }
 }

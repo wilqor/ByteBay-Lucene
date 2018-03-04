@@ -4,6 +4,7 @@ import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
 import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.source.SimpleReview;
 import com.wilqor.workshop.bytebay.lucene.source.Source;
+import com.wilqor.workshop.bytebay.lucene.utils.ThrowingSupplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -82,8 +83,8 @@ public class FacetingIndexer implements Indexer<SimpleReview> {
     }
 
     public static void main(String[] args) throws Exception {
-        try (Indexer<SimpleReview> indexer = new FacetingIndexer(ConfigLoader.LOADER.getPathForIndex(IndexType.FACETING_EXAMPLE))) {
-            indexer.index(Source.SIMPLE_MODEL);
-        }
+        Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.FACETING_EXAMPLE);
+        ThrowingSupplier<Indexer<SimpleReview>> supplier = () -> new FacetingIndexer(pathForIndex);
+        IndexerRunner.of(pathForIndex, supplier, Source.SIMPLE_MODEL).runIndexer();
     }
 }
