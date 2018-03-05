@@ -4,7 +4,6 @@ import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
 import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.source.Source;
 import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReview;
-import com.wilqor.workshop.bytebay.lucene.utils.ThrowingSupplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -39,7 +38,8 @@ public class WhitespaceAnalysisExample {
             directory = FSDirectory.open(targetDirectory);
             LOGGER.info("Opened index in directory: {}", directory.getDirectory());
             this.analyzer = analyzer;
-            indexWriter = new IndexWriter(directory, new IndexWriterConfig(this.analyzer));
+            IndexWriterConfig indexWriterConfig = new IndexWriterConfig(this.analyzer).setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+            indexWriter = new IndexWriter(directory, indexWriterConfig);
         }
 
         @Override
@@ -74,7 +74,10 @@ public class WhitespaceAnalysisExample {
 
     public static void main(String[] args) throws Exception {
         Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.WHITESPACE_ANALYZER_EXAMPLE);
-        ThrowingSupplier<Indexer<CommentedReview>> supplier = () -> new CommentedReviewIndexer(pathForIndex, new WhitespaceAnalyzer());
-        IndexerRunner.of(pathForIndex, supplier, Source.COMMENTED_MODEL).runIndexer();
+        try (Indexer<CommentedReview> indexer = new CommentedReviewIndexer(pathForIndex,
+                new WhitespaceAnalyzer())) {
+            indexer.index(Source.COMMENTED_MODEL);
+        }
+
     }
 }

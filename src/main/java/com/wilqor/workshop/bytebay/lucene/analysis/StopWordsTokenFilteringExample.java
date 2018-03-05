@@ -28,8 +28,9 @@ public class StopWordsTokenFilteringExample {
 
     public static void main(String[] args) throws Exception {
         Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.STOP_WORDS_TOKEN_FILTER_EXAMPLE);
-        ThrowingSupplier<Indexer<CommentedReview>> supplier = () -> new WhitespaceAnalysisExample.CommentedReviewIndexer(pathForIndex,
-                new StopWordsWhitespaceAnalyzer());
-        IndexerRunner.of(pathForIndex, supplier, Source.COMMENTED_MODEL).runIndexer();
+        try (Indexer<CommentedReview> indexer = new WhitespaceAnalysisExample.CommentedReviewIndexer(pathForIndex,
+                new StopWordsWhitespaceAnalyzer())) {
+            indexer.index(Source.COMMENTED_MODEL);
+        }
     }
 }

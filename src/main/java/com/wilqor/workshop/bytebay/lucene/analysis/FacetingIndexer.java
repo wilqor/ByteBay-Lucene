@@ -4,7 +4,6 @@ import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
 import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.source.Source;
 import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
-import com.wilqor.workshop.bytebay.lucene.utils.ThrowingSupplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -37,7 +36,8 @@ public class FacetingIndexer implements Indexer<SimpleReview> {
         directory = FSDirectory.open(targetDirectory);
         LOGGER.info("Opened index in directory: {}", directory.getDirectory());
         analyzer = new KeywordAnalyzer();
-        indexWriter = new IndexWriter(directory, new IndexWriterConfig(analyzer));
+        IndexWriterConfig indexWriterConfig = new IndexWriterConfig(this.analyzer).setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+        indexWriter = new IndexWriter(directory, indexWriterConfig);
     }
 
     @Override
@@ -72,7 +72,8 @@ public class FacetingIndexer implements Indexer<SimpleReview> {
 
     public static void main(String[] args) throws Exception {
         Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.FACETING_EXAMPLE);
-        ThrowingSupplier<Indexer<SimpleReview>> supplier = () -> new FacetingIndexer(pathForIndex);
-        IndexerRunner.of(pathForIndex, supplier, Source.SIMPLE_MODEL).runIndexer();
+        try (Indexer<SimpleReview> indexer = new FacetingIndexer(pathForIndex)) {
+            indexer.index(Source.SIMPLE_MODEL);
+        }
     }
 }
