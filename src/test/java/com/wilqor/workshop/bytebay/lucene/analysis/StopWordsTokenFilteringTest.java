@@ -23,9 +23,9 @@ public class StopWordsTokenFilteringTest extends FSDirectoryReadingTest {
     @Test
     public void shouldRetrieveZeroEntriesForStopWordsTermsInComment() throws Exception {
         Query query = new BooleanQuery.Builder()
-                .add(new TermQuery(new Term(CommentedReviewIndexer.COMMENT_FIELD, "nie")), BooleanClause.Occur.SHOULD)
-                .add(new TermQuery(new Term(CommentedReviewIndexer.COMMENT_FIELD, "i")), BooleanClause.Occur.SHOULD)
-                .add(new TermQuery(new Term(CommentedReviewIndexer.COMMENT_FIELD, "w")), BooleanClause.Occur.SHOULD)
+                .add(new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.COMMENT_FIELD, "nie")), BooleanClause.Occur.SHOULD)
+                .add(new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.COMMENT_FIELD, "i")), BooleanClause.Occur.SHOULD)
+                .add(new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.COMMENT_FIELD, "w")), BooleanClause.Occur.SHOULD)
                 .build();
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
@@ -35,7 +35,7 @@ public class StopWordsTokenFilteringTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveEntriesForNonStopWordTermInComment() throws Exception {
-        Query query = new TermQuery(new Term(CommentedReviewIndexer.COMMENT_FIELD, "czad"));
+        Query query = new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.COMMENT_FIELD, "czad"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
 

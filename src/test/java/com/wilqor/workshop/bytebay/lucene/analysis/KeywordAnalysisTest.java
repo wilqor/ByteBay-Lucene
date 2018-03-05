@@ -33,7 +33,7 @@ public class KeywordAnalysisTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveReviewsByUserName() throws Exception {
-        Query query = new TermQuery(new Term(SimpleReviewIndexer.USER_NAME_FIELD, "zbyszkop"));
+        Query query = new TermQuery(new Term(KeywordAnalysisExample.SimpleReviewIndexer.USER_NAME_FIELD, "zbyszkop"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(3L));
@@ -41,7 +41,7 @@ public class KeywordAnalysisTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveZeroReviewsForPartialArticleName() throws Exception {
-        Query query = new TermQuery(new Term(SimpleReviewIndexer.ARTICLE_NAME_FIELD, "lucene"));
+        Query query = new TermQuery(new Term(KeywordAnalysisExample.SimpleReviewIndexer.ARTICLE_NAME_FIELD, "lucene"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(0L));
@@ -49,7 +49,7 @@ public class KeywordAnalysisTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveZeroReviewsForArticleNameWithDifferentCase() throws Exception {
-        Query query = new TermQuery(new Term(SimpleReviewIndexer.ARTICLE_NAME_FIELD, "lucene 101"));
+        Query query = new TermQuery(new Term(KeywordAnalysisExample.SimpleReviewIndexer.ARTICLE_NAME_FIELD, "lucene 101"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(0L));
@@ -57,7 +57,7 @@ public class KeywordAnalysisTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveReviewsForArticleNameWithMatchingCase() throws Exception {
-        Query query = new TermQuery(new Term(SimpleReviewIndexer.ARTICLE_NAME_FIELD, "Lucene 101"));
+        Query query = new TermQuery(new Term(KeywordAnalysisExample.SimpleReviewIndexer.ARTICLE_NAME_FIELD, "Lucene 101"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(2L));
