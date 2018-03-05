@@ -1,5 +1,6 @@
 package com.wilqor.workshop.bytebay.lucene.source;
 
+import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
 import org.junit.Test;
 
 import java.util.List;

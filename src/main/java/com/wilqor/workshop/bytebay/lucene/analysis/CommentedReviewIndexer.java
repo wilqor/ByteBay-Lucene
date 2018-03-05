@@ -1,6 +1,6 @@
 package com.wilqor.workshop.bytebay.lucene.analysis;
 
-import com.wilqor.workshop.bytebay.lucene.source.CommentedReview;
+import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReview;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;

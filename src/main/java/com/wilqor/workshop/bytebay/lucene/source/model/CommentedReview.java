@@ -1,4 +1,4 @@
-package com.wilqor.workshop.bytebay.lucene.source;
+package com.wilqor.workshop.bytebay.lucene.source.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

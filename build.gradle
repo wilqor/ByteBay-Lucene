@@ -6,6 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "io.franzbecker:gradle-lombok:1.10"
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE")
     }
 }
 
@@ -15,6 +16,7 @@ version '1.0'
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: "io.franzbecker.gradle-lombok"
+apply plugin: 'org.springframework.boot'
 
 sourceCompatibility = 1.8
 
@@ -25,6 +27,9 @@ repositories {
 
 
 dependencies {
+    //commons compress, for parsing bzipped files
+    compile group: 'org.apache.commons', name: 'commons-compress', version: '1.16.1'
+
     // Lucene dependencies
     compile 'org.apache.lucene:lucene-core:7.2.1'
     compile 'org.apache.lucene:lucene-analyzers-common:7.2.1'
@@ -34,7 +39,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.16.20'
 
     // Json
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.4'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.0'
 
     // Logging
     compile 'org.apache.logging.log4j:log4j-api:2.7'
@@ -42,6 +47,9 @@ dependencies {
 
     // Yaml
     compile 'org.yaml:snakeyaml:1.19'
+
+    //spring boot
+    compile("org.springframework.boot:spring-boot-starter-web")
 
     // test dependencies
     testCompile 'junit:junit:4.12'

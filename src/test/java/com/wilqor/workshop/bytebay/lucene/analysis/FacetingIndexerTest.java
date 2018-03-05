@@ -3,7 +3,7 @@ package com.wilqor.workshop.bytebay.lucene.analysis;
 import com.wilqor.workshop.bytebay.lucene.FSDirectoryReadingTest;
 import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
 import com.wilqor.workshop.bytebay.lucene.config.IndexType;
-import com.wilqor.workshop.bytebay.lucene.source.Thumb;
+import com.wilqor.workshop.bytebay.lucene.source.model.Thumb;
 import org.apache.lucene.facet.FacetResult;
 import org.apache.lucene.facet.Facets;
 import org.apache.lucene.facet.FacetsCollector;
