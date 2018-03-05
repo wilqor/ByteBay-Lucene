@@ -8,18 +8,13 @@ import org.apache.lucene.facet.FacetResult;
 import org.apache.lucene.facet.Facets;
 import org.apache.lucene.facet.FacetsCollector;
 import org.apache.lucene.facet.LabelAndValue;
-import org.apache.lucene.facet.taxonomy.FastTaxonomyFacetCounts;
-import org.apache.lucene.facet.taxonomy.TaxonomyReader;
-import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
+import org.apache.lucene.facet.sortedset.DefaultSortedSetDocValuesReaderState;
+import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetCounts;
+import org.apache.lucene.facet.sortedset.SortedSetDocValuesReaderState;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.IOUtils;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -31,44 +26,33 @@ import static org.junit.Assert.assertThat;
 
 public class FacetingIndexerTest extends FSDirectoryReadingTest {
     private static final int TOP_N_LIMIT = 3;
-    private Path directoryPath;
-    private Directory taxonomyDirectory;
-    private TaxonomyReader taxonomyReader;
+
+    private SortedSetDocValuesReaderState state;
 
     @Override
     protected Path provideDirectoryPath() {
-        return directoryPath.resolve(FacetingIndexer.INDEX_SUBDIRECTORY_NAME);
+        return ConfigLoader.LOADER.getPathForIndex(IndexType.FACETING_EXAMPLE);
     }
 
     @Override
-    @Before
     public void setUp() throws Exception {
-        directoryPath = ConfigLoader.LOADER.getPathForIndex(IndexType.FACETING_EXAMPLE);
         super.setUp();
-        taxonomyDirectory = FSDirectory.open(directoryPath.resolve(FacetingIndexer.TAXONOMY_SUBDIRECTORY_NAME));
-        taxonomyReader = new DirectoryTaxonomyReader(taxonomyDirectory);
-    }
-
-    @Override
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
-        IOUtils.close(taxonomyDirectory, taxonomyReader);
+        state = new DefaultSortedSetDocValuesReaderState(searcher.getIndexReader());
     }
 
     @Test
     public void shouldFindMostCommentedArticle() throws Exception {
-        FacetResult topArticlesResult = getFacetResult(new MatchAllDocsQuery(), FacetingIndexer.ARTICLE_FACET_FIELD);
+        FacetResult topArticlesResult = getFacetResult(new MatchAllDocsQuery(), FacetingIndexer.ARTICLE_FIELD);
 
         LabelAndValue[] labelValues = topArticlesResult.labelValues;
         LabelAndValue topArticle = labelValues[0];
-        assertThat(topArticle.label, is("Lucene best practices"));
+        assertThat(topArticle.label, is("Lucene 101"));
         assertThat(topArticle.value, is(2));
     }
 
     @Test
     public void shouldFindMostActiveUser() throws Exception {
-        FacetResult topUsersResult = getFacetResult(new MatchAllDocsQuery(), FacetingIndexer.USER_NAME_FACET_FIELD);
+        FacetResult topUsersResult = getFacetResult(new MatchAllDocsQuery(), FacetingIndexer.USER_NAME_FIELD);
 
         LabelAndValue[] labelValues = topUsersResult.labelValues;
         LabelAndValue topUser = labelValues[0];
@@ -78,8 +62,8 @@ public class FacetingIndexerTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldCountThumbsForArticle() throws Exception {
-        TermQuery articleFilterQuery = new TermQuery(new Term(FacetingIndexer.ARTICLE_FACET_FIELD, "Lucene best practices"));
-        FacetResult topThumbsResult = getFacetResult(articleFilterQuery, FacetingIndexer.THUMB_FACET_FIELD);
+        TermQuery articleFilterQuery = new TermQuery(new Term(FacetingIndexer.ARTICLE_FIELD, "Lucene best practices"));
+        FacetResult topThumbsResult = getFacetResult(articleFilterQuery, FacetingIndexer.THUMB_FIELD);
 
         LabelAndValue[] labelValues = topThumbsResult.labelValues;
         assertThat(labelValues, is(arrayWithSize(1)));
@@ -92,7 +76,7 @@ public class FacetingIndexerTest extends FSDirectoryReadingTest {
     private FacetResult getFacetResult(Query query, String facetFieldName) throws IOException {
         FacetsCollector facetsCollector = new FacetsCollector();
         FacetsCollector.search(searcher, query, 0, facetsCollector);
-        Facets facets = new FastTaxonomyFacetCounts(taxonomyReader, FacetingIndexer.FACETS_CONFIG, facetsCollector);
+        Facets facets = new SortedSetDocValuesFacetCounts(state, facetsCollector);
         return facets.getTopChildren(TOP_N_LIMIT, facetFieldName);
     }
 }
