@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        maven { url 'http://dl.bintray.com/vermeulen-mp/gradle-plugins' }
         maven {
             url "https://plugins.gradle.org/m2/"
         }
@@ -17,6 +18,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: "io.franzbecker.gradle-lombok"
 apply plugin: 'org.springframework.boot'
+
 
 sourceCompatibility = 1.8
 
@@ -54,4 +56,56 @@ dependencies {
     // test dependencies
     testCompile 'junit:junit:4.12'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
+}
+
+def wikisearchapp = "$projectDir/src/main/wikisearch"
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ["$wikisearchapp/dist", "$projectDir/src/main/resources"]
+        }
+    }
+}
+
+
+task buildAngular(type:Exec) {
+    // installAngular should be run prior to this task
+    dependsOn "installAngular"
+    workingDir "$wikisearchapp"
+    inputs.dir "$wikisearchapp"
+    // Add task to the standard build group
+    group = BasePlugin.BUILD_GROUP
+    // ng doesn't exist as a file in windows -> ng.cmd
+    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+        commandLine "ng.cmd", "build"
+    } else {
+        commandLine "ng", "build"
+    }
+}
+
+task startAngular(type:Exec) {
+    // installAngular should be run prior to this task
+    dependsOn "buildAngular"
+    workingDir "$wikisearchapp"
+    inputs.dir "$wikisearchapp"
+    // Add task to the standard build group
+
+    // ng doesn't exist as a file in windows -> ng.cmd
+    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+        commandLine "ng.cmd", "serve"
+    } else {
+        commandLine "ng", "serve"
+    }
+}
+
+task installAngular(type:Exec) {
+    workingDir "$wikisearchapp"
+    inputs.dir "$wikisearchapp"
+    group = BasePlugin.BUILD_GROUP
+    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
+        commandLine "npm.cmd", "install"
+    } else {
+        commandLine "npm", "install"
+    }
 }
