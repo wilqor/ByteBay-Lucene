@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class LowerCaseTokenFilteringTest extends FSDirectoryReadingTest {
+public class LowerCaseTokenFilterExampleTest extends FSDirectoryReadingTest {
     private static final int QUERY_MATCHES_LIMIT = 3;
 
     @Override
@@ -24,7 +24,7 @@ public class LowerCaseTokenFilteringTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveZeroReviewsForFullArticleName() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "Lucene 101"));
+        Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "Lucene 101"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(0L));
@@ -32,7 +32,7 @@ public class LowerCaseTokenFilteringTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveZeroReviewsForArticleNameTermWithInUpperCase() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "Lucene"));
+        Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "Lucene"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(0L));
@@ -40,7 +40,7 @@ public class LowerCaseTokenFilteringTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveReviewsForArticleNameTermInLowerCase() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "lucene"));
+        Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "lucene"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(5L));

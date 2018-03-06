@@ -1,9 +1,9 @@
 rootDirectory: '/home/wilqor/workspaces/Lucene/'
 indexDirectories:
-  KEYWORD_ANALYZER_EXAMPLE: 'keyword_analyzer'
+  KEYWORD_TOKENIZER_EXAMPLE: 'keyword_tokenizer'
   FACETING_EXAMPLE: 'faceting'
-  WHITESPACE_ANALYZER_EXAMPLE: 'whitespace_analyzer'
-  STANDARD_ANALYZER_EXAMPLE: 'standard_analyzer'
+  WHITESPACE_TOKENIZER_EXAMPLE: 'whitespace_tokenizer'
+  STANDARD_TOKENIZER_EXAMPLE: 'standard_tokenizer'
   LOWER_CASE_TOKEN_FILTER_EXAMPLE: 'lower_case_token_filter'
   STOP_WORDS_TOKEN_FILTER_EXAMPLE: 'stop_words_token_filter'
 

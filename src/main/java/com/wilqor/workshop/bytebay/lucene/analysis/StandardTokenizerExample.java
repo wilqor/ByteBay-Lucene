@@ -10,7 +10,7 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
 
 import java.nio.file.Path;
 
-public class StandardAnalysisExample {
+public class StandardTokenizerExample {
     private static class StandardTokenizingAnalyzer extends Analyzer {
         @Override
         protected TokenStreamComponents createComponents(String fieldName) {
@@ -20,8 +20,8 @@ public class StandardAnalysisExample {
     }
 
     public static void main(String[] args) throws Exception {
-        Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.STANDARD_ANALYZER_EXAMPLE);
-        try (Indexer<CommentedReview> indexer = new WhitespaceAnalysisExample.CommentedReviewIndexer(pathForIndex,
+        Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.STANDARD_TOKENIZER_EXAMPLE);
+        try (Indexer<CommentedReview> indexer = new WhitespaceTokenizerExample.CommentedReviewIndexer(pathForIndex,
                 new StandardTokenizingAnalyzer())) {
             indexer.index(Source.COMMENTED_MODEL);
         }

@@ -14,17 +14,17 @@ import java.nio.file.Path;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class StandardAnalysisTest extends FSDirectoryReadingTest {
+public class StandardTokenizerExampleTest extends FSDirectoryReadingTest {
     private static final int QUERY_MATCHES_LIMIT = 3;
 
     @Override
     protected Path provideDirectoryPath() {
-        return ConfigLoader.LOADER.getPathForIndex(IndexType.STANDARD_ANALYZER_EXAMPLE);
+        return ConfigLoader.LOADER.getPathForIndex(IndexType.STANDARD_TOKENIZER_EXAMPLE);
     }
 
     @Test
     public void shouldRetrieveZeroReviewsForFullArticleName() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "Lucene 101"));
+        Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "Lucene 101"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(0L));
@@ -32,7 +32,7 @@ public class StandardAnalysisTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveZeroReviewsForArticleNameTermWithLowerCase() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "lucene"));
+        Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "lucene"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(0L));
@@ -40,7 +40,7 @@ public class StandardAnalysisTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveReviewsForArticleNameTermWithUpperCase() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "Lucene"));
+        Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "Lucene"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(5L));
@@ -48,7 +48,7 @@ public class StandardAnalysisTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveZeroReviewsForEmoteInComment() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.COMMENT_FIELD, ":)"));
+        Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.COMMENT_FIELD, ":)"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(0L));
@@ -56,7 +56,7 @@ public class StandardAnalysisTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveZeroReviewsForTermWithHyphenInComment() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.COMMENT_FIELD, "cud-miód"));
+        Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.COMMENT_FIELD, "cud-miód"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(0L));
@@ -64,7 +64,7 @@ public class StandardAnalysisTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveReviewsForTermBeforeHyphenInComment() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.COMMENT_FIELD, "cud"));
+        Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.COMMENT_FIELD, "cud"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(1L));
@@ -72,7 +72,7 @@ public class StandardAnalysisTest extends FSDirectoryReadingTest {
 
     @Test
     public void shouldRetrieveReviewsForTermAfterHyphenInComment() throws Exception {
-        Query query = new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.COMMENT_FIELD, "miód"));
+        Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.COMMENT_FIELD, "miód"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(1L));
