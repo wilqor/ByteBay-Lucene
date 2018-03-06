@@ -7,7 +7,8 @@ import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReview;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -28,7 +29,7 @@ public class WhitespaceAnalysisExample {
         static final String ARTICLE_NAME_FIELD = "article_name";
         static final String COMMENT_FIELD = "comment";
 
-        private static final Logger LOGGER = LogManager.getLogger(WhitespaceAnalysisExample.class);
+        private static final Logger LOGGER = LogManager.getLogger(CommentedReviewIndexer.class);
 
         private final FSDirectory directory;
         private final Analyzer analyzer;
@@ -72,10 +73,18 @@ public class WhitespaceAnalysisExample {
         }
     }
 
+    private static class WhitespaceTokenizingAnalyzer extends Analyzer {
+        @Override
+        protected TokenStreamComponents createComponents(String fieldName) {
+            Tokenizer whitespaceTokenizer = new WhitespaceTokenizer();
+            return new TokenStreamComponents(whitespaceTokenizer);
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.WHITESPACE_ANALYZER_EXAMPLE);
         try (Indexer<CommentedReview> indexer = new CommentedReviewIndexer(pathForIndex,
-                new WhitespaceAnalyzer())) {
+                new WhitespaceTokenizingAnalyzer())) {
             indexer.index(Source.COMMENTED_MODEL);
         }
 

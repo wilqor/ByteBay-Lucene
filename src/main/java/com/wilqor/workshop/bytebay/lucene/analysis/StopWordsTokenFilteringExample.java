@@ -4,7 +4,6 @@ import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
 import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.source.Source;
 import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReview;
-import com.wilqor.workshop.bytebay.lucene.utils.ThrowingSupplier;
 import org.apache.lucene.analysis.*;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -12,7 +11,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import java.nio.file.Path;
 
 public class StopWordsTokenFilteringExample {
-    public static class StopWordsWhitespaceAnalyzer extends Analyzer {
+    public static class WhitespaceStopWordsTokenizingAnalyzer extends Analyzer {
         @Override
         protected TokenStreamComponents createComponents(String fieldName) {
             Tokenizer tokenizer = new WhitespaceTokenizer();
@@ -29,7 +28,7 @@ public class StopWordsTokenFilteringExample {
     public static void main(String[] args) throws Exception {
         Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.STOP_WORDS_TOKEN_FILTER_EXAMPLE);
         try (Indexer<CommentedReview> indexer = new WhitespaceAnalysisExample.CommentedReviewIndexer(pathForIndex,
-                new StopWordsWhitespaceAnalyzer())) {
+                new WhitespaceStopWordsTokenizingAnalyzer())) {
             indexer.index(Source.COMMENTED_MODEL);
         }
     }

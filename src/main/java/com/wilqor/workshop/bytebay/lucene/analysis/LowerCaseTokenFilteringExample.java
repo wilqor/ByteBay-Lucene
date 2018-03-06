@@ -13,7 +13,7 @@ import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import java.nio.file.Path;
 
 public class LowerCaseTokenFilteringExample {
-    public static class LowerCaseWhitespaceAnalyzer extends Analyzer {
+    public static class WhitespaceLowerCaseTokenizingAnalyzer extends Analyzer {
         @Override
         protected TokenStreamComponents createComponents(String fieldName) {
             Tokenizer tokenizer = new WhitespaceTokenizer();
@@ -25,7 +25,7 @@ public class LowerCaseTokenFilteringExample {
     public static void main(String[] args) throws Exception {
         Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.LOWER_CASE_TOKEN_FILTER_EXAMPLE);
         try (Indexer<CommentedReview> indexer = new WhitespaceAnalysisExample.CommentedReviewIndexer(pathForIndex,
-                new LowerCaseWhitespaceAnalyzer())) {
+                new WhitespaceLowerCaseTokenizingAnalyzer())) {
             indexer.index(Source.COMMENTED_MODEL);
         }
     }

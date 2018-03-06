@@ -31,19 +31,19 @@ public class StandardAnalysisTest extends FSDirectoryReadingTest {
     }
 
     @Test
-    public void shouldRetrieveReviewsForArticleNameTermWithLowerCase() throws Exception {
+    public void shouldRetrieveZeroReviewsForArticleNameTermWithLowerCase() throws Exception {
         Query query = new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "lucene"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
-        assertThat(topDocs.totalHits, is(5L));
+        assertThat(topDocs.totalHits, is(0L));
     }
 
     @Test
-    public void shouldRetrieveZeroReviewsForArticleNameTermWithUpperCase() throws Exception {
+    public void shouldRetrieveReviewsForArticleNameTermWithUpperCase() throws Exception {
         Query query = new TermQuery(new Term(WhitespaceAnalysisExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "Lucene"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
-        assertThat(topDocs.totalHits, is(0L));
+        assertThat(topDocs.totalHits, is(5L));
     }
 
     @Test

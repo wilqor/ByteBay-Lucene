@@ -7,7 +7,8 @@ import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.KeywordAnalyzer;
+import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.core.KeywordTokenizer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -67,9 +68,17 @@ public class KeywordAnalysisExample {
         }
     }
 
+    private static class KeywordTokenizingAnalyzer extends Analyzer {
+        @Override
+        protected TokenStreamComponents createComponents(String fieldName) {
+            Tokenizer tokenizer = new KeywordTokenizer();
+            return new TokenStreamComponents(tokenizer);
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.KEYWORD_ANALYZER_EXAMPLE);
-        try (Indexer<SimpleReview> indexer = new SimpleReviewIndexer(pathForIndex, new KeywordAnalyzer())) {
+        try (Indexer<SimpleReview> indexer = new SimpleReviewIndexer(pathForIndex, new KeywordTokenizingAnalyzer())) {
             indexer.index(Source.SIMPLE_MODEL);
         }
     }
