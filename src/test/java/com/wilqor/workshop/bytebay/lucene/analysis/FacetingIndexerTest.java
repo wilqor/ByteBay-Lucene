@@ -1,6 +1,6 @@
 package com.wilqor.workshop.bytebay.lucene.analysis;
 
-import com.wilqor.workshop.bytebay.lucene.FSDirectoryReadingTest;
+import com.wilqor.workshop.bytebay.lucene.BaseReadingTest;
 import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
 import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.source.model.Thumb;
@@ -33,7 +33,7 @@ import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class FacetingIndexerTest extends FSDirectoryReadingTest {
+public class FacetingIndexerTest extends BaseReadingTest {
     private static final int TOP_N_LIMIT = 3;
 
     private SortedSetDocValuesReaderState state;

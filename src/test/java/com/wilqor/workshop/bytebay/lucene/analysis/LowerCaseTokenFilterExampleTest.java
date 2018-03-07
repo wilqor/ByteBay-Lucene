@@ -1,6 +1,6 @@
 package com.wilqor.workshop.bytebay.lucene.analysis;
 
-import com.wilqor.workshop.bytebay.lucene.FSDirectoryReadingTest;
+import com.wilqor.workshop.bytebay.lucene.BaseReadingTest;
 import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
 import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import org.apache.lucene.index.Term;
@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class LowerCaseTokenFilterExampleTest extends FSDirectoryReadingTest {
+public class LowerCaseTokenFilterExampleTest extends BaseReadingTest {
     private static final int QUERY_MATCHES_LIMIT = 3;
 
     @Override
