@@ -37,6 +37,7 @@ public class WhitespaceTokenizerExampleTest extends BaseReadingTest {
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(2L));
+        explainQueryResult(query, topDocs);
     }
 
     @Test

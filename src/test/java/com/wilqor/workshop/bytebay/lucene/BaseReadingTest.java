@@ -1,8 +1,10 @@
 package com.wilqor.workshop.bytebay.lucene;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.IOUtils;
@@ -13,6 +15,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 public abstract class BaseReadingTest {
+    private static final Logger LOGGER = LogManager.getLogger(BaseReadingTest.class);
+
     protected IndexSearcher searcher;
     private Directory directory;
     private IndexReader reader;
@@ -30,4 +34,11 @@ public abstract class BaseReadingTest {
     }
 
     protected abstract Path provideDirectoryPath() throws IOException;
+
+    protected void explainQueryResult(Query query, TopDocs topDocs) throws IOException {
+        for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+            Explanation explain = searcher.explain(query, scoreDoc.doc);
+            LOGGER.info("Explain for document {} is:\n{}", scoreDoc.doc, explain);
+        }
+    }
 }
