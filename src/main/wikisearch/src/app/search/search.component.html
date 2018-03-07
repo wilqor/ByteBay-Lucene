@@ -1,6 +1,8 @@
 <div class="container-fluid">
   <div class="row">
-    <input #textbox class="input" [(ngModel)]="searchString" >
-    <button class="btn" (click)="search(searchString)">Search</button>
+    <form #f="ngForm" (ngSubmit)="search(f.value.searchInput)" class="form-inline">
+        <input type="text" class="form-control" name="searchInput" placeholder="Przeszukaj Wikipedię" id="searchInput" ngModel>
+        <button class="btn btn-primary" type="submit" >Search</button>
+    </form >
   </div>
 </div>

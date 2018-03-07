@@ -14,7 +14,6 @@ export class Results {
 })
 export class ResultsComponent implements OnInit {
 
-
   _model: Results;
 
   constructor() { }
@@ -25,8 +24,6 @@ export class ResultsComponent implements OnInit {
 
   @Input()
   set model(model: Results) {
-      console.log("dostajesz");
-      console.log(model);
       this._model = model;
   }
 }

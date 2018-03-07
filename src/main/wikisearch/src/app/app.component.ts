@@ -20,8 +20,6 @@ export class AppComponent {
   searchEvent($event) {
     this.http.get("http://localhost:8080/search?searchString=" + $event).subscribe(data => {
       this.results = Object.assign(new Results(), data);
-      console.log("mam odpowiedz");
-
     })
   }
 
