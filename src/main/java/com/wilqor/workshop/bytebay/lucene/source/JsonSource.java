@@ -1,7 +1,7 @@
 package com.wilqor.workshop.bytebay.lucene.source;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wilqor.workshop.bytebay.lucene.source.model.WikipediaPage;
+import com.wilqor.workshop.bytebay.lucene.source.model.JsonWikipediaPage;
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
@@ -60,7 +60,7 @@ public class JsonSource<T> implements Source<T> {
     }
 
     public static void main(String[] args) {
-        List<WikipediaPage> reviews = Source.WIKIPEDIA_PAGE_MODEL.stream().limit(10).collect(Collectors.toList());
+        List<JsonWikipediaPage> reviews = Source.WIKIPEDIA_PAGE_MODEL.stream().limit(10).collect(Collectors.toList());
 
         reviews.forEach(review -> LOGGER.info("Loaded review: {}", review));
     }

@@ -1,4 +1,4 @@
-rootDirectory: '/home/wilqor/workspaces/Lucene/'
+rootDirectory: '/home/zbyszko/workspace/lucene/'
 indexDirectories:
   KEYWORD_TOKENIZER_EXAMPLE: 'keyword_tokenizer'
   FACETING_EXAMPLE: 'faceting'
@@ -8,4 +8,5 @@ indexDirectories:
   STOP_WORDS_TOKEN_FILTER_EXAMPLE: 'stop_words_token_filter'
   SYNONYM_TOKEN_FILTER_EXAMPLE: 'synonym_token_filter'
   HTML_CHAR_STRIP_FILTER_EXAMPLE: 'html_char_strip_filter'
+  WIKIPEDIA_SEARCH: 'wikipedia'
 
