@@ -11,15 +11,22 @@ import org.apache.lucene.facet.FacetResult;
 import org.apache.lucene.facet.Facets;
 import org.apache.lucene.facet.FacetsCollector;
 import org.apache.lucene.facet.LabelAndValue;
+import org.apache.lucene.facet.range.LongRange;
+import org.apache.lucene.facet.range.LongRangeFacetCounts;
+
 import org.apache.lucene.facet.sortedset.DefaultSortedSetDocValuesReaderState;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetCounts;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesReaderState;
 import org.apache.lucene.index.Term;
+
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
+
 import org.junit.Test;
 
+
+import java.util.stream.IntStream;
 import com.wilqor.workshop.bytebay.lucene.BaseReadingTest;
 import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
 import com.wilqor.workshop.bytebay.lucene.config.IndexType;
@@ -60,6 +67,43 @@ public class FacetingExampleTest extends BaseReadingTest {
         LabelAndValue topUser = labelValues[0];
         assertThat(topUser.label, is("zbyszkop"));
         assertThat(topUser.value, is(3));
+    }
+
+    @Test
+    public void shouldGroupByTimestamp() throws Exception {
+
+        long lowest = 1510422743;
+        long highest = 1520422743;
+        int noOfGroups = 10000;
+
+        LongRange[] ranges = getRanges(lowest, highest, noOfGroups);
+
+        FacetsCollector fc = new FacetsCollector();
+        FacetsCollector.search(searcher, new MatchAllDocsQuery(), noOfGroups, fc);
+        FacetResult result = getFacetResult(ranges, fc);
+        FacetResult resultLowerRes = getFacetResult(getRanges(lowest, highest, noOfGroups / 10), fc);
+        for (int i = 0; i < result.childCount; i++) {
+            LabelAndValue lv = result.labelValues[i];
+
+            System.out.println(String.format("%s (%s)", lv.label, lv.value));
+        }
+        System.out.println(result.childCount);
+    }
+
+    private FacetResult getFacetResult(LongRange[] ranges, FacetsCollector fc) throws IOException {
+        LongRangeFacetCounts facets = new LongRangeFacetCounts(FacetingIndexer.TIMESTAMP_FIELD, fc, ranges);
+        return facets.getTopChildren(0, FacetingIndexer.TIMESTAMP_FIELD);
+    }
+
+    private LongRange[] getRanges(long lowest, long highest, int noOfGroups) {
+        long rangeSize = (highest - lowest) / noOfGroups;
+
+        return IntStream.range(0, noOfGroups)
+                .mapToObj(rangeId -> {
+                    long rangeStart = lowest + rangeId * rangeSize;
+                    long rangeEnd = rangeStart + rangeSize;
+                    return new LongRange(rangeStart + "-" + rangeEnd, rangeStart, true, rangeEnd, false);
+                }).toArray(LongRange[]::new);
     }
 
     @Test
