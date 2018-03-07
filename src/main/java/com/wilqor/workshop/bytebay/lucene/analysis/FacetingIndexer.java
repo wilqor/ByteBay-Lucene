@@ -3,6 +3,8 @@ package com.wilqor.workshop.bytebay.lucene.analysis;
 import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
 import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.source.Source;
+import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReview;
+import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReviewWithTimestamp;
 import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +12,10 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.LongPoint;
+import org.apache.lucene.document.NumericDocValuesField;
+import org.apache.lucene.document.SortedNumericDocValuesField;
+import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.facet.FacetsConfig;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetField;
@@ -21,10 +27,11 @@ import org.apache.lucene.util.IOUtils;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class FacetingIndexer implements Indexer<SimpleReview> {
+public class FacetingIndexer implements Indexer<CommentedReviewWithTimestamp> {
     static final String USER_NAME_FIELD = "user_name";
     static final String THUMB_FIELD = "thumb";
     static final String ARTICLE_FIELD = "article_name";
+    static final String TIMESTAMP_FIELD = "timestamp";
 
     private static final Logger LOGGER = LogManager.getLogger(FacetingIndexer.class);
 
@@ -41,7 +48,7 @@ public class FacetingIndexer implements Indexer<SimpleReview> {
     }
 
     @Override
-    public void index(Source<SimpleReview> source) {
+    public void index(Source<CommentedReviewWithTimestamp> source) {
         source.stream().forEach(simpleReview -> {
             Document reviewDocument = mapToDocument(simpleReview);
             FacetsConfig facetsConfig = new FacetsConfig();
@@ -54,12 +61,14 @@ public class FacetingIndexer implements Indexer<SimpleReview> {
         });
     }
 
-    private Document mapToDocument(SimpleReview simpleReview) {
+    private Document mapToDocument(CommentedReviewWithTimestamp review) {
         Document reviewDocument = new Document();
-        reviewDocument.add(new SortedSetDocValuesFacetField(USER_NAME_FIELD, simpleReview.getUserName()));
-        reviewDocument.add(new SortedSetDocValuesFacetField(THUMB_FIELD, simpleReview.getThumb().name()));
-        reviewDocument.add(new StringField(ARTICLE_FIELD, simpleReview.getArticleName(), Field.Store.YES));
-        reviewDocument.add(new SortedSetDocValuesFacetField(ARTICLE_FIELD, simpleReview.getArticleName()));
+        reviewDocument.add(new SortedSetDocValuesFacetField(USER_NAME_FIELD, review.getUserName()));
+        reviewDocument.add(new SortedSetDocValuesFacetField(THUMB_FIELD, review.getThumb().name()));
+        reviewDocument.add(new StringField(ARTICLE_FIELD, review.getArticleName(), Field.Store.YES));
+        reviewDocument.add(new SortedSetDocValuesFacetField(ARTICLE_FIELD, review.getArticleName()));
+        reviewDocument.add(new NumericDocValuesField(TIMESTAMP_FIELD, review.getTimestamp()));
+//        reviewDocument.add(new LongPoint(TIMESTAMP_FIELD, review.getTimestamp()));
         return reviewDocument;
     }
 
@@ -72,8 +81,10 @@ public class FacetingIndexer implements Indexer<SimpleReview> {
 
     public static void main(String[] args) throws Exception {
         Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.FACETING_EXAMPLE);
-        try (Indexer<SimpleReview> indexer = new FacetingIndexer(pathForIndex)) {
-            indexer.index(Source.SIMPLE_MODEL);
+        try (Indexer<CommentedReviewWithTimestamp> indexer = new FacetingIndexer(pathForIndex)) {
+            indexer.index(Source.COMMENTED_WITH_TIMESTAMP_MODEL);
         }
+
+
     }
 }

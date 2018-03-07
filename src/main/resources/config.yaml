@@ -1,4 +1,4 @@
-rootDirectory: '/home/wilqor/workspaces/Lucene/'
+rootDirectory: '/Users/admin/'
 indexDirectories:
   KEYWORD_TOKENIZER_EXAMPLE: 'keyword_tokenizer'
   FACETING_EXAMPLE: 'faceting'
