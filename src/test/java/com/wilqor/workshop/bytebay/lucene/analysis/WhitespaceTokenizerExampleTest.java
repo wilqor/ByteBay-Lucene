@@ -29,6 +29,17 @@ public class WhitespaceTokenizerExampleTest extends BaseReadingTest {
     }
 
     @Test
+    public void shouldRetrieveReviewsForFullArticleNameAsPhrase() throws Exception {
+        Query query = new PhraseQuery.Builder()
+                .add(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "Lucene"), 0)
+                .add(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "101"), 1)
+                .build();
+        TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
+
+        assertThat(topDocs.totalHits, is(2L));
+    }
+
+    @Test
     public void shouldRetrieveZeroReviewsForArticleNameTermWithDifferentCase() throws Exception {
         Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "lucene"));
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
@@ -45,7 +56,7 @@ public class WhitespaceTokenizerExampleTest extends BaseReadingTest {
     }
 
     @Test
-    public void shouldRetrieveReviewsForArticleNameTermsWithMatchingCase() throws Exception {
+    public void shouldRetrieveReviewsForArticleNameTermsWithMatchingCaseUsingMust() throws Exception {
         Query query = new BooleanQuery.Builder()
                 .add(new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "Lucene")), BooleanClause.Occur.MUST)
                 .add(new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "101")), BooleanClause.Occur.MUST)
@@ -53,6 +64,17 @@ public class WhitespaceTokenizerExampleTest extends BaseReadingTest {
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(2L));
+    }
+
+    @Test
+    public void shouldRetrieveReviewsForArticleNameTermsWithMatchingCaseUsingShoud() throws Exception {
+        Query query = new BooleanQuery.Builder()
+                .add(new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "Action")), BooleanClause.Occur.SHOULD)
+                .add(new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "101")), BooleanClause.Occur.SHOULD)
+                .build();
+        TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
+
+        assertThat(topDocs.totalHits, is(3L));
     }
 
     @Test
