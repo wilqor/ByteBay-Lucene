@@ -1,13 +1,13 @@
 package com.wilqor.workshop.bytebay.lucene.wikipediasearch;
 
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 class SearchResultEntry {
     private String title;
     private String link;

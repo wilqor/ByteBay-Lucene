@@ -36,7 +36,7 @@ dependencies {
     compile 'org.apache.lucene:lucene-core:7.2.1'
     compile 'org.apache.lucene:lucene-analyzers-common:7.2.1'
     compile 'org.apache.lucene:lucene-facet:7.2.1'
-    compile group: 'org.apache.lucene', name: 'lucene-grouping', version: '7.2.1'
+    compile group: 'org.apache.lucene', name: 'lucene-queryparser', version: '7.2.1'
 
 
     // Lombok

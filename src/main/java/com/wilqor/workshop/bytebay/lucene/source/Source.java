@@ -12,7 +12,7 @@ public interface Source<T> {
     Source<CommentedReview> COMMENTED_MODEL = new JsonSource<>("commented_model.json.batch", CommentedReview.class);
     Source<CommentedReviewWithTimestamp> COMMENTED_WITH_TIMESTAMP_MODEL = new JsonSource<>("commented_model_with_timestamp.json.batch", CommentedReviewWithTimestamp.class);
     Source<CommentedReview> COMMENTED_HTML_MODEL = new JsonSource<>("commented_model_html.json.batch", CommentedReview.class);
-    Source<WikipediaPage> WIKIPEDIA_PAGE_MODEL = new JsonSource<>("plwiki_head.json.batch.bz2", WikipediaPage.class);
+    Source<WikipediaPage> WIKIPEDIA_PAGE_MODEL = new WikipediaSource("plwiki.json.batch");
 
     Stream<T> stream();
 }

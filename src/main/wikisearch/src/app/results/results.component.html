@@ -1,0 +1,12 @@
+<div class="container-fluid" *ngIf="_model !== undefined">
+  <div class="row">
+    <ul class="list-group">
+      <li class="list-group-item" *ngFor="let result of _model.searchResults">
+        <app-result-entry [result]="result" ngDefaultControl=""></app-result-entry>
+      </li>
+    </ul>
+  </div>
+  <div class="row">
+    Query took {{_model.executionTimeMs}} ms.
+  </div>
+</div>
