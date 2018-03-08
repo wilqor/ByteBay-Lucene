@@ -26,7 +26,7 @@ import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
 import com.wilqor.workshop.bytebay.lucene.source.model.Thumb;
 
-public class FacetingIndexerTest extends BaseReadingTest {
+public class FacetingExampleTest extends BaseReadingTest {
     private static final int TOP_N_LIMIT = 3;
 
     private SortedSetDocValuesReaderState state;
