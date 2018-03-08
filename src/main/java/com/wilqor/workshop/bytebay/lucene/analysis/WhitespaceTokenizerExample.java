@@ -1,9 +1,9 @@
 package com.wilqor.workshop.bytebay.lucene.analysis;
 
-import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
-import com.wilqor.workshop.bytebay.lucene.config.IndexType;
-import com.wilqor.workshop.bytebay.lucene.source.Source;
-import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReview;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Optional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -18,16 +18,14 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.IOUtils;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Optional;
+import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
+import com.wilqor.workshop.bytebay.lucene.config.IndexType;
+import com.wilqor.workshop.bytebay.lucene.source.Source;
+import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReview;
+import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
 
 public class WhitespaceTokenizerExample {
     public static class CommentedReviewIndexer implements Indexer<CommentedReview> {
-        static final String USER_NAME_FIELD = "user_name";
-        static final String THUMB_FIELD = "thumb";
-        static final String ARTICLE_NAME_FIELD = "article_name";
-        static final String COMMENT_FIELD = "comment";
 
         private static final Logger LOGGER = LogManager.getLogger(CommentedReviewIndexer.class);
 
@@ -57,11 +55,11 @@ public class WhitespaceTokenizerExample {
 
         private Document mapToDocument(CommentedReview sourceItem) {
             Document reviewDocument = new Document();
-            reviewDocument.add(new StringField(USER_NAME_FIELD, sourceItem.getUserName(), Field.Store.YES));
-            reviewDocument.add(new StringField(THUMB_FIELD, sourceItem.getThumb().name(), Field.Store.YES));
-            reviewDocument.add(new TextField(ARTICLE_NAME_FIELD, sourceItem.getArticleName(), Field.Store.YES));
+            reviewDocument.add(new StringField(SimpleReview.USER_NAME_FIELD, sourceItem.getUserName(), Field.Store.YES));
+            reviewDocument.add(new StringField(SimpleReview.THUMB_FIELD, sourceItem.getThumb().name(), Field.Store.YES));
+            reviewDocument.add(new TextField(SimpleReview.ARTICLE_NAME_FIELD, sourceItem.getArticleName(), Field.Store.YES));
             Optional.ofNullable(sourceItem.getComment())
-                    .ifPresent(comment -> reviewDocument.add(new TextField(COMMENT_FIELD, comment, Field.Store.YES)));
+                    .ifPresent(comment -> reviewDocument.add(new TextField(CommentedReview.COMMENT_FIELD, comment, Field.Store.YES)));
             return reviewDocument;
         }
 

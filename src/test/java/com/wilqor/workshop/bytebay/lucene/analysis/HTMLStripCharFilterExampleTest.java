@@ -14,6 +14,7 @@ import org.junit.Test;
 import com.wilqor.workshop.bytebay.lucene.BaseReadingTest;
 import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
 import com.wilqor.workshop.bytebay.lucene.config.IndexType;
+import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReview;
 
 public class HTMLStripCharFilterExampleTest extends BaseReadingTest {
 	private static final int QUERY_MATCHES_LIMIT = 3;
@@ -25,7 +26,7 @@ public class HTMLStripCharFilterExampleTest extends BaseReadingTest {
 
 	@Test
 	public void shouldRetrieveCommentsForTermInsideHTMLTag() throws Exception {
-		Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.COMMENT_FIELD, "polecam"));
+		Query query = new TermQuery(new Term(CommentedReview.COMMENT_FIELD, "polecam"));
 		TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
 		assertThat(topDocs.totalHits, is(2L));
@@ -33,7 +34,7 @@ public class HTMLStripCharFilterExampleTest extends BaseReadingTest {
 
 	@Test
 	public void shouldRetrieveCommentsForTermInsideNestedHTMLTagWithAttribute() throws Exception {
-		Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.COMMENT_FIELD, "Serdecznie"));
+		Query query = new TermQuery(new Term(CommentedReview.COMMENT_FIELD, "Serdecznie"));
 		TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
 		assertThat(topDocs.totalHits, is(1L));
@@ -41,7 +42,7 @@ public class HTMLStripCharFilterExampleTest extends BaseReadingTest {
 
 	@Test
 	public void shouldRetrieveZeroCommentsForHTMLAttribute() throws Exception {
-		Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.COMMENT_FIELD, "highlighted"));
+		Query query = new TermQuery(new Term(CommentedReview.COMMENT_FIELD, "highlighted"));
 		TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
 		assertThat(topDocs.totalHits, is(0L));
@@ -49,7 +50,7 @@ public class HTMLStripCharFilterExampleTest extends BaseReadingTest {
 
 	@Test
 	public void shouldRetrieveZeroCommentsForHTMLTagName() throws Exception {
-		Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.COMMENT_FIELD, "strong"));
+		Query query = new TermQuery(new Term(CommentedReview.COMMENT_FIELD, "strong"));
 		TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
 		assertThat(topDocs.totalHits, is(0L));
@@ -57,7 +58,7 @@ public class HTMLStripCharFilterExampleTest extends BaseReadingTest {
 
 	@Test
 	public void shouldRetrieveZeroCommentsForHTMLOpeningTag() throws Exception {
-		Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.COMMENT_FIELD, "<p>"));
+		Query query = new TermQuery(new Term(CommentedReview.COMMENT_FIELD, "<p>"));
 		TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
 		assertThat(topDocs.totalHits, is(0L));
@@ -65,7 +66,7 @@ public class HTMLStripCharFilterExampleTest extends BaseReadingTest {
 
 	@Test
 	public void shouldRetrieveZeroCommentsForHTMLClosingTag() throws Exception {
-		Query query = new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.COMMENT_FIELD, "</p>"));
+		Query query = new TermQuery(new Term(CommentedReview.COMMENT_FIELD, "</p>"));
 		TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
 		assertThat(topDocs.totalHits, is(0L));
@@ -74,7 +75,7 @@ public class HTMLStripCharFilterExampleTest extends BaseReadingTest {
 	@Test
 	public void shouldRetrieveZeroCommentsForHTMLTagWithContent() throws Exception {
 		Query query = new TermQuery(
-				new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.COMMENT_FIELD, "<strong>polecam</strong>"));
+				new Term(CommentedReview.COMMENT_FIELD, "<strong>polecam</strong>"));
 		TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
 		assertThat(topDocs.totalHits, is(0L));

@@ -1,4 +1,4 @@
-rootDirectory: '/home/zbyszko/workspace/lucene/'
+rootDirectory: 'C:\workspaces\Lucene'
 indexDirectories:
   KEYWORD_TOKENIZER_EXAMPLE: 'keyword_tokenizer'
   FACETING_EXAMPLE: 'faceting'
@@ -6,7 +6,7 @@ indexDirectories:
   STANDARD_TOKENIZER_EXAMPLE: 'standard_tokenizer'
   LOWER_CASE_TOKEN_FILTER_EXAMPLE: 'lower_case_token_filter'
   STOP_WORDS_TOKEN_FILTER_EXAMPLE: 'stop_words_token_filter'
-  SYNONYM_TOKEN_FILTER_EXAMPLE: 'synonym_token_filter'
+  SYNONYM_GRAPH_FILTER_EXAMPLE: 'synonym_graph_filter'
   HTML_CHAR_STRIP_FILTER_EXAMPLE: 'html_char_strip_filter'
   WIKIPEDIA_SEARCH: 'wikipedia'
 
