@@ -2,6 +2,7 @@ package com.wilqor.workshop.bytebay.lucene.analysis;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -98,14 +99,18 @@ public class KeywordTokenizerExample {
 
 		void read() throws IOException {
 			TopDocs topDocs = searcher.search(new MatchAllDocsQuery(), QUERY_MATCHES_LIMIT);
-			for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
-				Document review = searcher.doc(scoreDoc.doc);
-				LOGGER.info("Found review - user name: {}, thumb: {}, article name: {}",
-						review.get(SimpleReview.USER_NAME_FIELD),
-						review.get(SimpleReview.THUMB_FIELD),
-						review.get(SimpleReview.ARTICLE_NAME_FIELD)
-				);
-			}
+			Arrays.stream(topDocs.scoreDocs).forEach(scoreDoc -> {
+				try {
+					Document review = searcher.doc(scoreDoc.doc);
+					LOGGER.info("Found review - user name: {}, thumb: {}, article name: {}",
+							review.get(SimpleReview.USER_NAME_FIELD),
+							review.get(SimpleReview.THUMB_FIELD),
+							review.get(SimpleReview.ARTICLE_NAME_FIELD)
+					);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			});
 		}
 
 		@Override

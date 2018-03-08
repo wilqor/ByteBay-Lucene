@@ -13,6 +13,7 @@ import org.junit.Before;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 public abstract class BaseReadingTest {
     private static final Logger LOGGER = LogManager.getLogger(BaseReadingTest.class);
@@ -35,10 +36,14 @@ public abstract class BaseReadingTest {
 
     protected abstract Path provideDirectoryPath() throws IOException;
 
-    protected void explainQueryResult(Query query, TopDocs topDocs) throws IOException {
-        for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
-            Explanation explain = searcher.explain(query, scoreDoc.doc);
-            LOGGER.info("Explain for document {} is:\n{}", scoreDoc.doc, explain);
-        }
+    protected void explainQueryResult(Query query, TopDocs topDocs) {
+        Arrays.stream(topDocs.scoreDocs).forEach(scoreDoc -> {
+            try {
+                Explanation explain = searcher.explain(query, scoreDoc.doc);
+                LOGGER.info("Explain for document {} is:\n{}", scoreDoc.doc, explain);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
