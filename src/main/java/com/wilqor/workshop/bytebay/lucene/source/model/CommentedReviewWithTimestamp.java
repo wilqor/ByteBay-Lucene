@@ -8,5 +8,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class CommentedReviewWithTimestamp extends CommentedReview {
+
+    public static String TIMESTAMP_FIELD = "timestamp";
     long timestamp;
 }

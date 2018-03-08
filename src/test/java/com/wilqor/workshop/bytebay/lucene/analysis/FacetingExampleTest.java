@@ -1,37 +1,34 @@
 package com.wilqor.workshop.bytebay.lucene.analysis;
 
-import static org.hamcrest.Matchers.arrayWithSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.nio.file.Path;
-
+import com.wilqor.workshop.bytebay.lucene.BaseReadingTest;
+import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
+import com.wilqor.workshop.bytebay.lucene.config.IndexType;
+import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReviewWithTimestamp;
+import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
+import com.wilqor.workshop.bytebay.lucene.source.model.Thumb;
 import org.apache.lucene.facet.FacetResult;
 import org.apache.lucene.facet.Facets;
 import org.apache.lucene.facet.FacetsCollector;
 import org.apache.lucene.facet.LabelAndValue;
 import org.apache.lucene.facet.range.LongRange;
 import org.apache.lucene.facet.range.LongRangeFacetCounts;
-
 import org.apache.lucene.facet.sortedset.DefaultSortedSetDocValuesReaderState;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetCounts;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesReaderState;
 import org.apache.lucene.index.Term;
-
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
-
 import org.junit.Test;
 
-
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.stream.IntStream;
-import com.wilqor.workshop.bytebay.lucene.BaseReadingTest;
-import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
-import com.wilqor.workshop.bytebay.lucene.config.IndexType;
-import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
-import com.wilqor.workshop.bytebay.lucene.source.model.Thumb;
+
+import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class FacetingExampleTest extends BaseReadingTest {
     private static final int TOP_N_LIMIT = 3;
@@ -71,28 +68,24 @@ public class FacetingExampleTest extends BaseReadingTest {
 
     @Test
     public void shouldGroupByTimestamp() throws Exception {
-
-        long lowest = 1510422743;
+        long lowest = 1520422703;
         long highest = 1520422743;
-        int noOfGroups = 10000;
+        int noOfGroups = 5;
 
         LongRange[] ranges = getRanges(lowest, highest, noOfGroups);
 
         FacetsCollector fc = new FacetsCollector();
         FacetsCollector.search(searcher, new MatchAllDocsQuery(), noOfGroups, fc);
         FacetResult result = getFacetResult(ranges, fc);
-        FacetResult resultLowerRes = getFacetResult(getRanges(lowest, highest, noOfGroups / 10), fc);
-        for (int i = 0; i < result.childCount; i++) {
-            LabelAndValue lv = result.labelValues[i];
 
-            System.out.println(String.format("%s (%s)", lv.label, lv.value));
-        }
-        System.out.println(result.childCount);
+        assertThat(result.childCount, is(noOfGroups));
+        Arrays.stream(result.labelValues)
+                .forEach(labelAndValue -> assertThat(labelAndValue.value, is(1)));
     }
 
     private FacetResult getFacetResult(LongRange[] ranges, FacetsCollector fc) throws IOException {
-        LongRangeFacetCounts facets = new LongRangeFacetCounts(FacetingIndexer.TIMESTAMP_FIELD, fc, ranges);
-        return facets.getTopChildren(0, FacetingIndexer.TIMESTAMP_FIELD);
+        LongRangeFacetCounts facets = new LongRangeFacetCounts(CommentedReviewWithTimestamp.TIMESTAMP_FIELD, fc, ranges);
+        return facets.getTopChildren(0, CommentedReviewWithTimestamp.TIMESTAMP_FIELD);
     }
 
     private LongRange[] getRanges(long lowest, long highest, int noOfGroups) {
@@ -102,7 +95,8 @@ public class FacetingExampleTest extends BaseReadingTest {
                 .mapToObj(rangeId -> {
                     long rangeStart = lowest + rangeId * rangeSize;
                     long rangeEnd = rangeStart + rangeSize;
-                    return new LongRange(rangeStart + "-" + rangeEnd, rangeStart, true, rangeEnd, false);
+                    boolean shouldHaveInclusiveEnd = rangeId == noOfGroups - 1;
+                    return new LongRange(rangeStart + "-" + rangeEnd, rangeStart, true, rangeEnd, shouldHaveInclusiveEnd);
                 }).toArray(LongRange[]::new);
     }
 
