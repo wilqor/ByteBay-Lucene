@@ -31,7 +31,8 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class FacetingExampleTest extends BaseReadingTest {
-    private static final int TOP_N_LIMIT = 3;
+    private static final int TOP_SORTED_SET_DOC_VALUES_FACETS = 3;
+    private static final int TOP_N_DOCUMENT_HITS = 0;
 
     private SortedSetDocValuesReaderState state;
 
@@ -48,7 +49,8 @@ public class FacetingExampleTest extends BaseReadingTest {
 
     @Test
     public void shouldFindMostCommentedArticle() throws Exception {
-        FacetResult topArticlesResult = getFacetResult(new MatchAllDocsQuery(), SimpleReview.ARTICLE_NAME_FIELD);
+        FacetsCollector fc = collectFacets(new MatchAllDocsQuery());
+        FacetResult topArticlesResult = getSortedSetDocValuesFacetResult(fc, SimpleReview.ARTICLE_NAME_FIELD);
 
         LabelAndValue[] labelValues = topArticlesResult.labelValues;
         LabelAndValue topArticle = labelValues[0];
@@ -58,12 +60,27 @@ public class FacetingExampleTest extends BaseReadingTest {
 
     @Test
     public void shouldFindMostActiveUser() throws Exception {
-        FacetResult topUsersResult = getFacetResult(new MatchAllDocsQuery(), SimpleReview.USER_NAME_FIELD);
+        FacetsCollector fc = collectFacets(new MatchAllDocsQuery());
+        FacetResult topUsersResult = getSortedSetDocValuesFacetResult(fc, SimpleReview.USER_NAME_FIELD);
 
         LabelAndValue[] labelValues = topUsersResult.labelValues;
         LabelAndValue topUser = labelValues[0];
         assertThat(topUser.label, is("zbyszkop"));
         assertThat(topUser.value, is(3));
+    }
+
+    @Test
+    public void shouldCountThumbsForArticle() throws Exception {
+        TermQuery articleFilterQuery = new TermQuery(new Term(SimpleReview.ARTICLE_NAME_FIELD, "Lucene best practices"));
+        FacetsCollector fc = collectFacets(articleFilterQuery);
+        FacetResult topThumbsResult = getSortedSetDocValuesFacetResult(fc, SimpleReview.THUMB_FIELD);
+
+        LabelAndValue[] labelValues = topThumbsResult.labelValues;
+        assertThat(labelValues, is(arrayWithSize(1)));
+
+        LabelAndValue topThumbs = labelValues[0];
+        assertThat(topThumbs.label, is(Thumb.UP.name()));
+        assertThat(topThumbs.value, is(2));
     }
 
     @Test
@@ -74,23 +91,32 @@ public class FacetingExampleTest extends BaseReadingTest {
 
         LongRange[] ranges = getRanges(lowest, highest, noOfGroups);
 
-        FacetsCollector fc = new FacetsCollector();
-        FacetsCollector.search(searcher, new MatchAllDocsQuery(), noOfGroups, fc);
-        FacetResult result = getFacetResult(ranges, fc);
+        FacetsCollector fc = collectFacets(new MatchAllDocsQuery());
+        FacetResult result = getLongRangeFacetResult(fc, CommentedReviewWithTimestamp.TIMESTAMP_FIELD, ranges);
 
         assertThat(result.childCount, is(noOfGroups));
         Arrays.stream(result.labelValues)
                 .forEach(labelAndValue -> assertThat(labelAndValue.value, is(1)));
     }
 
-    private FacetResult getFacetResult(LongRange[] ranges, FacetsCollector fc) throws IOException {
-        LongRangeFacetCounts facets = new LongRangeFacetCounts(CommentedReviewWithTimestamp.TIMESTAMP_FIELD, fc, ranges);
-        return facets.getTopChildren(0, CommentedReviewWithTimestamp.TIMESTAMP_FIELD);
+    private FacetsCollector collectFacets(Query query) throws IOException {
+        FacetsCollector facetsCollector = new FacetsCollector();
+        FacetsCollector.search(searcher, query, TOP_N_DOCUMENT_HITS, facetsCollector);
+        return facetsCollector;
+    }
+
+    private FacetResult getLongRangeFacetResult(FacetsCollector fc, String facetFieldName, LongRange[] ranges) throws IOException {
+        LongRangeFacetCounts facets = new LongRangeFacetCounts(facetFieldName, fc, ranges);
+        return facets.getTopChildren(TOP_N_DOCUMENT_HITS, facetFieldName);
+    }
+
+    private FacetResult getSortedSetDocValuesFacetResult(FacetsCollector fc, String facetFieldName) throws IOException {
+        Facets facets = new SortedSetDocValuesFacetCounts(state, fc);
+        return facets.getTopChildren(TOP_SORTED_SET_DOC_VALUES_FACETS, facetFieldName);
     }
 
     private LongRange[] getRanges(long lowest, long highest, int noOfGroups) {
         long rangeSize = (highest - lowest) / noOfGroups;
-
         return IntStream.range(0, noOfGroups)
                 .mapToObj(rangeId -> {
                     long rangeStart = lowest + rangeId * rangeSize;
@@ -98,25 +124,5 @@ public class FacetingExampleTest extends BaseReadingTest {
                     boolean shouldHaveInclusiveEnd = rangeId == noOfGroups - 1;
                     return new LongRange(rangeStart + "-" + rangeEnd, rangeStart, true, rangeEnd, shouldHaveInclusiveEnd);
                 }).toArray(LongRange[]::new);
-    }
-
-    @Test
-    public void shouldCountThumbsForArticle() throws Exception {
-        TermQuery articleFilterQuery = new TermQuery(new Term(SimpleReview.ARTICLE_NAME_FIELD, "Lucene best practices"));
-        FacetResult topThumbsResult = getFacetResult(articleFilterQuery, SimpleReview.THUMB_FIELD);
-
-        LabelAndValue[] labelValues = topThumbsResult.labelValues;
-        assertThat(labelValues, is(arrayWithSize(1)));
-
-        LabelAndValue topThumbs = labelValues[0];
-        assertThat(topThumbs.label, is(Thumb.UP.name()));
-        assertThat(topThumbs.value, is(2));
-    }
-
-    private FacetResult getFacetResult(Query query, String facetFieldName) throws IOException {
-        FacetsCollector facetsCollector = new FacetsCollector();
-        FacetsCollector.search(searcher, query, 0, facetsCollector);
-        Facets facets = new SortedSetDocValuesFacetCounts(state, facetsCollector);
-        return facets.getTopChildren(TOP_N_LIMIT, facetFieldName);
     }
 }

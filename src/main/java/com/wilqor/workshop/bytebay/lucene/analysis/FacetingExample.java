@@ -29,6 +29,7 @@ public class FacetingExample {
 		private final FSDirectory directory;
 		private final IndexWriter indexWriter;
 		private final Analyzer analyzer;
+		private FacetsConfig facetsConfig;
 
 		FacetingIndexer(Path targetDirectory) throws IOException {
 			directory = FSDirectory.open(targetDirectory);
@@ -37,13 +38,13 @@ public class FacetingExample {
 			IndexWriterConfig indexWriterConfig = new IndexWriterConfig(this.analyzer)
 					.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
 			indexWriter = new IndexWriter(directory, indexWriterConfig);
+			facetsConfig = new FacetsConfig();
 		}
 
 		@Override
 		public void index(Source<CommentedReviewWithTimestamp> source) {
 			source.stream().forEach(simpleReview -> {
 				Document reviewDocument = mapToDocument(simpleReview);
-				FacetsConfig facetsConfig = new FacetsConfig();
 				try {
 					Document facetedDocument = facetsConfig.build(reviewDocument);
 					indexWriter.addDocument(facetedDocument);
