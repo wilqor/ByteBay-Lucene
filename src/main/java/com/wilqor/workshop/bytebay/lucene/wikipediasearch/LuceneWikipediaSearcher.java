@@ -4,9 +4,10 @@ import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
 import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.source.Source;
 import com.wilqor.workshop.bytebay.lucene.source.model.WikipediaPage;
-import org.apache.lucene.analysis.Analyzer;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
@@ -54,7 +55,6 @@ public class LuceneWikipediaSearcher implements WikipediaSearcher {
             return Arrays.stream(search.scoreDocs)
                     .map(doc -> {
                                 try {
-
                                    Document document = reader.document(doc.doc);
                                    return SearchResultEntry.builder()
                                             .link(document.get("link"))
@@ -84,7 +84,7 @@ public class LuceneWikipediaSearcher implements WikipediaSearcher {
                 IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig);
 
                 Source.WIKIPEDIA_PAGE_MODEL.stream()
-                        .map(page -> toDocument(page, analyzer))
+                        .map(this::toDocument)
                         .forEach(document -> {
                             try {
                                 indexWriter.addDocument(document);
@@ -106,16 +106,13 @@ public class LuceneWikipediaSearcher implements WikipediaSearcher {
     }
 
 
-    private Document toDocument(WikipediaPage page, Analyzer analyzer) {
+    private Document toDocument(WikipediaPage page) {
         Document document = new Document();
-        document.add(new StoredField("text", page.getText()));
         document.add(new StoredField("description", page.getDescription()));
         document.add(new StoredField("url", page.getUrl()));
-        document.add(new StoredField("title", page.getTitle()));
         document.add(new StoredField("link", page.getUrl()));
-        document.add(new TextField("text", analyzer.tokenStream("text", page.getText())));
-        document.add(new TextField("title", analyzer.tokenStream("title", page.getText())));
-
+        document.add(new TextField("text", page.getText(), Field.Store.NO));
+        document.add(new TextField("title", page.getTitle(), Field.Store.YES));
         return document;
     }
 
