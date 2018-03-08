@@ -7,6 +7,7 @@ indexDirectories:
   LOWER_CASE_TOKEN_FILTER_EXAMPLE: 'lower_case_token_filter'
   STOP_WORDS_TOKEN_FILTER_EXAMPLE: 'stop_words_token_filter'
   SYNONYM_GRAPH_FILTER_EXAMPLE: 'synonym_graph_filter'
+  POLISH_ANALYZER_EXAMPLE: "polish_analyzer_example"
   HTML_CHAR_STRIP_FILTER_EXAMPLE: 'html_char_strip_filter'
   WIKIPEDIA_SEARCH: 'wikipedia'
 
