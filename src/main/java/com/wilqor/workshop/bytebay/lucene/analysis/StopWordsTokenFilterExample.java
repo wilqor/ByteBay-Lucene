@@ -4,24 +4,17 @@ import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
 import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.source.Source;
 import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReview;
-import org.apache.lucene.analysis.*;
-import org.apache.lucene.analysis.core.WhitespaceTokenizer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.Analyzer;
 
 import java.nio.file.Path;
 
 public class StopWordsTokenFilterExample {
+    // TODO implement analyzer, which splits tokens by whitespace, puts them in lower case and filters stop words
+    // tip: make use of both StandardAnalyzer.STOP_WORDS_SET and custom stop words
     public static class WhitespaceStopWordsFilteringAnalyzer extends Analyzer {
         @Override
         protected TokenStreamComponents createComponents(String fieldName) {
-            Tokenizer tokenizer = new WhitespaceTokenizer();
-            CharArraySet stopSet = CharArraySet.copy(StandardAnalyzer.STOP_WORDS_SET);
-            stopSet.add("i");
-            stopSet.add("nie");
-            stopSet.add("w");
-            TokenFilter filter = new LowerCaseFilter(tokenizer);
-            filter = new StopFilter(filter, stopSet);
-            return new TokenStreamComponents(tokenizer, filter);
+            throw new UnsupportedOperationException();
         }
     }
 

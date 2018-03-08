@@ -73,9 +73,10 @@ public class QueryParserTest extends BaseReadingTest {
     }
 
     @Test
-    public void shouldRetrieveAllReviewsByTermWithBothKindOfWildcardsInArticleNameField() throws Exception {
+    public void shouldRetrieveAllReviewsByTermWithBothKindsOfWildcardInArticleNameField() throws Exception {
         QueryParser queryParser = new QueryParser(DEFAULT_SEARCH_FIELD, queryAnalyzer);
-        Query query = queryParser.parse(SimpleReview.ARTICLE_NAME_FIELD + ":" + "L?c*");
+        // TODO define query as specified in test method name
+        Query query = queryParser.parse("put your query here");
         TopDocs topDocs = searcher.search(query, TOP_HITS_LIMIT);
 
         assertThat(topDocs.totalHits, is(5L));
@@ -84,9 +85,8 @@ public class QueryParserTest extends BaseReadingTest {
     @Test
     public void shouldRetrieveFirstAndThirdReviewByBooleanQuery() throws Exception {
         QueryParser queryParser = new QueryParser(DEFAULT_SEARCH_FIELD, queryAnalyzer);
-        Query query = queryParser.parse(
-                "article_name:Lucene AND (comment:Czad OR (user_name:jakubs AND thumb:UP AND comment:polecam))"
-        );
+        // TODO define query as specified in test method name
+        Query query = queryParser.parse("put your query here");
         TopDocs topDocs = searcher.search(query, TOP_HITS_LIMIT);
 
         assertThat(topDocs.totalHits, is(2L));

@@ -5,20 +5,15 @@ import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.source.Source;
 import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReview;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.LowerCaseFilter;
-import org.apache.lucene.analysis.TokenFilter;
-import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 
 import java.nio.file.Path;
 
 public class LowerCaseTokenFilterExample {
+    // TODO implement analyzer, splitting tokens by whitespace and putting them in lower case
     public static class WhitespaceLowerCaseFilteringAnalyzer extends Analyzer {
         @Override
         protected TokenStreamComponents createComponents(String fieldName) {
-            Tokenizer tokenizer = new WhitespaceTokenizer();
-            TokenFilter tokenFilter = new LowerCaseFilter(tokenizer);
-            return new TokenStreamComponents(tokenizer, tokenFilter);
+            throw new UnsupportedOperationException();
         }
     }
 

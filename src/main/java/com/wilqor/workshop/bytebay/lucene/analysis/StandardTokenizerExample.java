@@ -5,17 +5,15 @@ import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.source.Source;
 import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReview;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
 
 import java.nio.file.Path;
 
 public class StandardTokenizerExample {
+    // TODO implement analyzer, which performs only standard tokenization
     private static class StandardTokenizingAnalyzer extends Analyzer {
         @Override
         protected TokenStreamComponents createComponents(String fieldName) {
-            Tokenizer tokenizer = new StandardTokenizer();
-            return new TokenStreamComponents(tokenizer);
+            throw new UnsupportedOperationException();
         }
     }
 
