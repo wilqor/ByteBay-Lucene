@@ -18,13 +18,12 @@ import org.apache.lucene.util.CharsRefBuilder;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class SynonymTokenFilterExample {
-    public static class SynonymTokenFilteringAnalyzer extends Analyzer {
+public class SynonymGraphFilterExample {
+    public static class SynonymGraphFilteringAnalyzer extends Analyzer {
         @Override
         protected TokenStreamComponents createComponents(String fieldName) {
             Tokenizer tokenizer = new StandardTokenizer();
             TokenFilter filter = new LowerCaseFilter(tokenizer);
-
             SynonymMap.Builder synonymMapBuilder = new SynonymMap.Builder();
             synonymMapBuilder.add(new CharsRef("czad"),
                     SynonymMap.Builder.join(new String[]{"bomba", "super", "mega"}, new CharsRefBuilder()),
@@ -40,9 +39,9 @@ public class SynonymTokenFilterExample {
     }
 
     public static void main(String[] args) throws Exception {
-        Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.SYNONYM_TOKEN_FILTER_EXAMPLE);
+        Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.SYNONYM_GRAPH_FILTER_EXAMPLE);
         try (Indexer<CommentedReview> indexer = new WhitespaceTokenizerExample.CommentedReviewIndexer(pathForIndex,
-                new SynonymTokenFilteringAnalyzer())) {
+                new SynonymGraphFilteringAnalyzer())) {
             indexer.index(Source.COMMENTED_MODEL);
         }
     }

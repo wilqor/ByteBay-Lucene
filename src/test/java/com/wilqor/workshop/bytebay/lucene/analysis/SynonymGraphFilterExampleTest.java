@@ -14,12 +14,12 @@ import java.nio.file.Path;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class SynonymTokenFilterExampleTest extends BaseReadingTest {
+public class SynonymGraphFilterExampleTest extends BaseReadingTest {
     private static final int QUERY_MATCHES_LIMIT = 3;
 
     @Override
     protected Path provideDirectoryPath() {
-        return ConfigLoader.LOADER.getPathForIndex(IndexType.SYNONYM_TOKEN_FILTER_EXAMPLE);
+        return ConfigLoader.LOADER.getPathForIndex(IndexType.SYNONYM_GRAPH_FILTER_EXAMPLE);
     }
 
     @Test
