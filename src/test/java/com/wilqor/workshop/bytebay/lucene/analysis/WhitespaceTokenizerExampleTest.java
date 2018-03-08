@@ -68,7 +68,7 @@ public class WhitespaceTokenizerExampleTest extends BaseReadingTest {
     }
 
     @Test
-    public void shouldRetrieveReviewsForArticleNameTermsWithMatchingCaseUsingShoud() throws Exception {
+    public void shouldRetrieveReviewsForArticleNameTermsWithMatchingCaseUsingShould() throws Exception {
         Query query = new BooleanQuery.Builder()
                 .add(new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "Action")), BooleanClause.Occur.SHOULD)
                 .add(new TermQuery(new Term(WhitespaceTokenizerExample.CommentedReviewIndexer.ARTICLE_NAME_FIELD, "101")), BooleanClause.Occur.SHOULD)
