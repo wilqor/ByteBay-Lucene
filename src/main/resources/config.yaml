@@ -1,4 +1,4 @@
-rootDirectory: 'C:\workspaces\Lucene'
+rootDirectory: '/home/zbyszko/lucene'
 indexDirectories:
   KEYWORD_TOKENIZER_EXAMPLE: 'keyword_tokenizer'
   FACETING_EXAMPLE: 'faceting'

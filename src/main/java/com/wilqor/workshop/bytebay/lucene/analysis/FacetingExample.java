@@ -1,14 +1,16 @@
 package com.wilqor.workshop.bytebay.lucene.analysis;
 
-import java.io.IOException;
-import java.nio.file.Path;
-
+import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
+import com.wilqor.workshop.bytebay.lucene.config.IndexType;
+import com.wilqor.workshop.bytebay.lucene.source.Source;
+import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReviewWithTimestamp;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.NumericDocValuesField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.facet.FacetsConfig;
 import org.apache.lucene.facet.sortedset.SortedSetDocValuesFacetField;
@@ -17,13 +19,11 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.IOUtils;
 
-import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
-import com.wilqor.workshop.bytebay.lucene.config.IndexType;
-import com.wilqor.workshop.bytebay.lucene.source.Source;
-import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
+import java.io.IOException;
+import java.nio.file.Path;
 
 public class FacetingExample {
-	public static class FacetingIndexer implements Indexer<SimpleReview> {
+	public static class FacetingIndexer implements Indexer<CommentedReviewWithTimestamp> {
 		private static final Logger LOGGER = LogManager.getLogger(FacetingExample.class);
 
 		private final FSDirectory directory;
@@ -40,7 +40,7 @@ public class FacetingExample {
 		}
 
 		@Override
-		public void index(Source<SimpleReview> source) {
+		public void index(Source<CommentedReviewWithTimestamp> source) {
 			source.stream().forEach(simpleReview -> {
 				Document reviewDocument = mapToDocument(simpleReview);
 				FacetsConfig facetsConfig = new FacetsConfig();
@@ -53,12 +53,13 @@ public class FacetingExample {
 			});
 		}
 
-		private Document mapToDocument(SimpleReview simpleReview) {
+		private Document mapToDocument(CommentedReviewWithTimestamp simpleReview) {
 			Document reviewDocument = new Document();
-			reviewDocument.add(new SortedSetDocValuesFacetField(SimpleReview.USER_NAME_FIELD, simpleReview.getUserName()));
-			reviewDocument.add(new SortedSetDocValuesFacetField(SimpleReview.THUMB_FIELD, simpleReview.getThumb().name()));
-			reviewDocument.add(new StringField(SimpleReview.ARTICLE_NAME_FIELD, simpleReview.getArticleName(), Field.Store.YES));
-			reviewDocument.add(new SortedSetDocValuesFacetField(SimpleReview.ARTICLE_NAME_FIELD, simpleReview.getArticleName()));
+			reviewDocument.add(new SortedSetDocValuesFacetField(CommentedReviewWithTimestamp.USER_NAME_FIELD, simpleReview.getUserName()));
+			reviewDocument.add(new SortedSetDocValuesFacetField(CommentedReviewWithTimestamp.THUMB_FIELD, simpleReview.getThumb().name()));
+			reviewDocument.add(new StringField(CommentedReviewWithTimestamp.ARTICLE_NAME_FIELD, simpleReview.getArticleName(), Field.Store.YES));
+			reviewDocument.add(new SortedSetDocValuesFacetField(CommentedReviewWithTimestamp.ARTICLE_NAME_FIELD, simpleReview.getArticleName()));
+			reviewDocument.add(new NumericDocValuesField(CommentedReviewWithTimestamp.TIMESTAMP_FIELD, simpleReview.getTimestamp()));
 			return reviewDocument;
 		}
 
@@ -72,8 +73,8 @@ public class FacetingExample {
 
 	public static void main(String[] args) throws Exception {
 		Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.FACETING_EXAMPLE);
-		try (Indexer<SimpleReview> indexer = new FacetingIndexer(pathForIndex)) {
-			indexer.index(Source.SIMPLE_MODEL);
+		try (Indexer<CommentedReviewWithTimestamp> indexer = new FacetingIndexer(pathForIndex)) {
+			indexer.index(Source.COMMENTED_WITH_TIMESTAMP_MODEL);
 		}
 	}
 }
