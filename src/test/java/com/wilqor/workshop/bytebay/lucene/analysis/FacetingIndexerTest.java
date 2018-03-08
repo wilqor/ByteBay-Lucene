@@ -1,9 +1,12 @@
 package com.wilqor.workshop.bytebay.lucene.analysis;
 
-import com.wilqor.workshop.bytebay.lucene.BaseReadingTest;
-import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
-import com.wilqor.workshop.bytebay.lucene.config.IndexType;
-import com.wilqor.workshop.bytebay.lucene.source.model.Thumb;
+import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.io.IOException;
+import java.nio.file.Path;
+
 import org.apache.lucene.facet.FacetResult;
 import org.apache.lucene.facet.Facets;
 import org.apache.lucene.facet.FacetsCollector;
@@ -17,12 +20,11 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.nio.file.Path;
-
-import static org.hamcrest.Matchers.arrayWithSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import com.wilqor.workshop.bytebay.lucene.BaseReadingTest;
+import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
+import com.wilqor.workshop.bytebay.lucene.config.IndexType;
+import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
+import com.wilqor.workshop.bytebay.lucene.source.model.Thumb;
 
 public class FacetingIndexerTest extends BaseReadingTest {
     private static final int TOP_N_LIMIT = 3;
@@ -42,7 +44,7 @@ public class FacetingIndexerTest extends BaseReadingTest {
 
     @Test
     public void shouldFindMostCommentedArticle() throws Exception {
-        FacetResult topArticlesResult = getFacetResult(new MatchAllDocsQuery(), FacetingIndexer.ARTICLE_FIELD);
+        FacetResult topArticlesResult = getFacetResult(new MatchAllDocsQuery(), SimpleReview.ARTICLE_NAME_FIELD);
 
         LabelAndValue[] labelValues = topArticlesResult.labelValues;
         LabelAndValue topArticle = labelValues[0];
@@ -52,7 +54,7 @@ public class FacetingIndexerTest extends BaseReadingTest {
 
     @Test
     public void shouldFindMostActiveUser() throws Exception {
-        FacetResult topUsersResult = getFacetResult(new MatchAllDocsQuery(), FacetingIndexer.USER_NAME_FIELD);
+        FacetResult topUsersResult = getFacetResult(new MatchAllDocsQuery(), SimpleReview.USER_NAME_FIELD);
 
         LabelAndValue[] labelValues = topUsersResult.labelValues;
         LabelAndValue topUser = labelValues[0];
@@ -62,8 +64,8 @@ public class FacetingIndexerTest extends BaseReadingTest {
 
     @Test
     public void shouldCountThumbsForArticle() throws Exception {
-        TermQuery articleFilterQuery = new TermQuery(new Term(FacetingIndexer.ARTICLE_FIELD, "Lucene best practices"));
-        FacetResult topThumbsResult = getFacetResult(articleFilterQuery, FacetingIndexer.THUMB_FIELD);
+        TermQuery articleFilterQuery = new TermQuery(new Term(SimpleReview.ARTICLE_NAME_FIELD, "Lucene best practices"));
+        FacetResult topThumbsResult = getFacetResult(articleFilterQuery, SimpleReview.THUMB_FIELD);
 
         LabelAndValue[] labelValues = topThumbsResult.labelValues;
         assertThat(labelValues, is(arrayWithSize(1)));

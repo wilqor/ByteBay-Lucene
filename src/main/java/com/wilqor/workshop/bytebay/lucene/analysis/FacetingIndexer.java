@@ -1,9 +1,8 @@
 package com.wilqor.workshop.bytebay.lucene.analysis;
 
-import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
-import com.wilqor.workshop.bytebay.lucene.config.IndexType;
-import com.wilqor.workshop.bytebay.lucene.source.Source;
-import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
+import java.io.IOException;
+import java.nio.file.Path;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -18,14 +17,12 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.IOUtils;
 
-import java.io.IOException;
-import java.nio.file.Path;
+import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
+import com.wilqor.workshop.bytebay.lucene.config.IndexType;
+import com.wilqor.workshop.bytebay.lucene.source.Source;
+import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
 
 public class FacetingIndexer implements Indexer<SimpleReview> {
-    static final String USER_NAME_FIELD = "user_name";
-    static final String THUMB_FIELD = "thumb";
-    static final String ARTICLE_FIELD = "article_name";
-
     private static final Logger LOGGER = LogManager.getLogger(FacetingIndexer.class);
 
     private final FSDirectory directory;
@@ -56,10 +53,10 @@ public class FacetingIndexer implements Indexer<SimpleReview> {
 
     private Document mapToDocument(SimpleReview simpleReview) {
         Document reviewDocument = new Document();
-        reviewDocument.add(new SortedSetDocValuesFacetField(USER_NAME_FIELD, simpleReview.getUserName()));
-        reviewDocument.add(new SortedSetDocValuesFacetField(THUMB_FIELD, simpleReview.getThumb().name()));
-        reviewDocument.add(new StringField(ARTICLE_FIELD, simpleReview.getArticleName(), Field.Store.YES));
-        reviewDocument.add(new SortedSetDocValuesFacetField(ARTICLE_FIELD, simpleReview.getArticleName()));
+        reviewDocument.add(new SortedSetDocValuesFacetField(SimpleReview.USER_NAME_FIELD, simpleReview.getUserName()));
+        reviewDocument.add(new SortedSetDocValuesFacetField(SimpleReview.THUMB_FIELD, simpleReview.getThumb().name()));
+        reviewDocument.add(new StringField(SimpleReview.ARTICLE_NAME_FIELD, simpleReview.getArticleName(), Field.Store.YES));
+        reviewDocument.add(new SortedSetDocValuesFacetField(SimpleReview.ARTICLE_NAME_FIELD, simpleReview.getArticleName()));
         return reviewDocument;
     }
 
