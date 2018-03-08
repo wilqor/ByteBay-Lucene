@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 public abstract class BaseReadingTest {
-    private static final Logger LOGGER = LogManager.getLogger(BaseReadingTest.class);
+    protected static final Logger LOGGER = LogManager.getLogger(BaseReadingTest.class);
 
     protected IndexSearcher searcher;
     private Directory directory;

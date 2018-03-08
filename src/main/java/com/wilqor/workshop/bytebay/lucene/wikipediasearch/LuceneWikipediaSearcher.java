@@ -27,6 +27,5 @@ public class LuceneWikipediaSearcher implements WikipediaSearcher {
     public static void main(String[] args) {
         LuceneWikipediaSearcher searcher = new LuceneWikipediaSearcher();
         searcher.indexWikipedia();
-
     }
 }
