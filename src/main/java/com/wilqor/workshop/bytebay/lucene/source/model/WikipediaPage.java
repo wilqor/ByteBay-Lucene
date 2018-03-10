@@ -1,17 +1,16 @@
 package com.wilqor.workshop.bytebay.lucene.source.model;
 
-import lombok.*;
-
 import java.util.Scanner;
 
 
-@Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
 public class WikipediaPage extends JsonWikipediaPage {
 
     private String description;
+
+    @java.beans.ConstructorProperties({"description"})
+    private WikipediaPage(String description) {
+        this.description = description;
+    }
 
     public static WikipediaPage fromJsonWikipediaPage(JsonWikipediaPage page) {
 
@@ -27,5 +26,39 @@ public class WikipediaPage extends JsonWikipediaPage {
 
         return wikipediaPage;
 
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof WikipediaPage)) return false;
+        final WikipediaPage other = (WikipediaPage) o;
+        if (!other.canEqual((Object) this)) return false;
+        if (!super.equals(o)) return false;
+        final Object this$description = this.getDescription();
+        final Object other$description = other.getDescription();
+        if (this$description == null ? other$description != null : !this$description.equals(other$description))
+            return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + super.hashCode();
+        final Object $description = this.getDescription();
+        result = result * PRIME + ($description == null ? 43 : $description.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof WikipediaPage;
+    }
+
+    public String toString() {
+        return "WikipediaPage(super=" + super.toString() + ", description=" + this.getDescription() + ")";
     }
 }
