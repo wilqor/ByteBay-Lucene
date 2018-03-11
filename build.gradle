@@ -1,46 +1,46 @@
 buildscript {
     repositories {
-        maven { url 'http://dl.bintray.com/vermeulen-mp/gradle-plugins' }
         maven {
-            url "https://plugins.gradle.org/m2/"
+            url 'http://dl.bintray.com/vermeulen-mp/gradle-plugins'
+        }
+        maven {
+            url 'https://plugins.gradle.org/m2/'
         }
     }
     dependencies {
-        classpath "io.franzbecker:gradle-lombok:1.10"
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE")
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE'
+        classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
+        classpath 'io.franzbecker:gradle-lombok:1.10'
     }
 }
-
-group 'com.wilqor.workshop.bytebay'
-version '1.0'
 
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: "io.franzbecker.gradle-lombok"
 apply plugin: 'org.springframework.boot'
+apply plugin: 'com.moowork.node'
 
-
+group 'com.wilqor.workshop.bytebay'
+version '1.0'
 sourceCompatibility = 1.8
-
 
 repositories {
     mavenCentral()
 }
 
-
 dependencies {
-    //commons compress, for parsing bzipped files
-    compile group: 'org.apache.commons', name: 'commons-compress', version: '1.16.1'
+    // commons compress, for parsing bzipped files
+    compile 'org.apache.commons:commons-compress:1.16.1'
 
     // Lucene dependencies
     compile 'org.apache.lucene:lucene-core:7.2.1'
     compile 'org.apache.lucene:lucene-analyzers-common:7.2.1'
     compile 'org.apache.lucene:lucene-facet:7.2.1'
-    compile group: 'org.apache.lucene', name: 'lucene-queryparser', version: '7.2.1'
-    compile group: 'org.apache.lucene', name: 'lucene-analyzers-morfologik', version: '7.2.1'
+    compile 'org.apache.lucene:lucene-queryparser:7.2.1'
+    compile 'org.apache.lucene:lucene-analyzers-morfologik:7.2.1'
 
     // Json
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.0'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.0'
 
     // Logging
     compile 'org.apache.logging.log4j:log4j-api:2.7'
@@ -49,8 +49,8 @@ dependencies {
     // Yaml
     compile 'org.yaml:snakeyaml:1.19'
 
-    //spring boot
-    compile("org.springframework.boot:spring-boot-starter-web")
+    // Spring Boot
+    compile 'org.springframework.boot:spring-boot-starter-web:1.5.10.RELEASE'
 
     // test dependencies
     testCompile 'junit:junit:4.12'
@@ -58,6 +58,16 @@ dependencies {
 }
 
 def wikisearchapp = "$projectDir/src/main/wikisearch"
+
+node {
+    // version of Node to use
+    version = '8.10.0'
+    // if true, it will download node using specified parameters
+    // if false, it will try to use globally installed node
+    download = true
+    // set the work directory where node_modules should be located
+    nodeModulesDir = file("$wikisearchapp")
+}
 
 sourceSets {
     main {
@@ -67,44 +77,10 @@ sourceSets {
     }
 }
 
-
-task buildAngular(type:Exec) {
-    // installAngular should be run prior to this task
-    dependsOn "installAngular"
-    workingDir "$wikisearchapp"
-    inputs.dir "$wikisearchapp"
-    // Add task to the standard build group
-    group = BasePlugin.BUILD_GROUP
-    // ng doesn't exist as a file in windows -> ng.cmd
-    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-        commandLine "ng.cmd", "build"
-    } else {
-        commandLine "ng", "build"
-    }
+task buildClient(type: NpmTask, dependsOn: 'npmInstall') {
+    group = 'build'
+    description = 'Compile client side folder for production'
+    args = ['run', 'build']
 }
 
-task startAngular(type:Exec) {
-    // installAngular should be run prior to this task
-    dependsOn "buildAngular"
-    workingDir "$wikisearchapp"
-    inputs.dir "$wikisearchapp"
-    // Add task to the standard build group
-
-    // ng doesn't exist as a file in windows -> ng.cmd
-    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-        commandLine "ng.cmd", "serve"
-    } else {
-        commandLine "ng", "serve"
-    }
-}
-
-task installAngular(type:Exec) {
-    workingDir "$wikisearchapp"
-    inputs.dir "$wikisearchapp"
-    group = BasePlugin.BUILD_GROUP
-    if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")){
-        commandLine "npm.cmd", "install"
-    } else {
-        commandLine "npm", "install"
-    }
-}
+bootRun.dependsOn(buildClient)

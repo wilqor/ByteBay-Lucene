@@ -13,9 +13,4 @@ Generates IntelliJ IDEA project.
 ```
 ./gradlew bootRun
 ```
-Starts WikipediaSearch Service.
-```
-./gradlew startAngular
-```
-Starts WikipediaSearch Frontend - Angular based application. Please remember to start the Service first!
-  
+Builds WikipediaSearch Frontend (Angular based application), starts WikipediaSearch Service serving Frontend on: [http://localhost:8080](http://localhost:8080)
