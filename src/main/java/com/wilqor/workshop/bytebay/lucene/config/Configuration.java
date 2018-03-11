@@ -5,6 +5,7 @@ import java.util.Objects;
 
 public class Configuration {
     String rootDirectory;
+    String luceneDirectory;
     Map<IndexType, String> indexDirectories;
 
     public Configuration() {
@@ -27,12 +28,12 @@ public class Configuration {
         this.indexDirectories = indexDirectories;
     }
 
-    @Override
-    public String toString() {
-        return "Configuration{" +
-                "rootDirectory='" + rootDirectory + '\'' +
-                ", indexDirectories=" + indexDirectories +
-                '}';
+    public String getLuceneDirectory() {
+        return luceneDirectory;
+    }
+
+    public void setLuceneDirectory(String luceneDirectory) {
+        this.luceneDirectory = luceneDirectory;
     }
 
     @Override
@@ -41,11 +42,22 @@ public class Configuration {
         if (o == null || getClass() != o.getClass()) return false;
         Configuration that = (Configuration) o;
         return Objects.equals(rootDirectory, that.rootDirectory) &&
+                Objects.equals(luceneDirectory, that.luceneDirectory) &&
                 Objects.equals(indexDirectories, that.indexDirectories);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(rootDirectory, indexDirectories);
+        return Objects.hash(rootDirectory, luceneDirectory, indexDirectories);
     }
+
+    @Override
+    public String toString() {
+        return "Configuration{" +
+                "rootDirectory='" + rootDirectory + '\'' +
+                ", luceneDirectory='" + luceneDirectory + '\'' +
+                ", indexDirectories=" + indexDirectories +
+                '}';
+    }
+
 }

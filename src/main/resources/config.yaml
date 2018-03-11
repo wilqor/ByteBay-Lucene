@@ -1,4 +1,8 @@
-rootDirectory: '/home/zbyszko/lucene'
+# rootDirectory for indices, empty value defaults to user directory, uncomment line below to override
+#rootDirectory: '/home/zbyszko'
+# subdirectory containing Lucene indices
+luceneDirectory: 'Lucene'
+# subdirectories for each index used in examples and exercises
 indexDirectories:
   KEYWORD_TOKENIZER_EXAMPLE: 'keyword_tokenizer'
   FACETING_EXAMPLE: 'faceting'
