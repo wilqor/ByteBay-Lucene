@@ -12,6 +12,7 @@ import org.apache.lucene.analysis.core.KeywordTokenizer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -63,7 +64,7 @@ public class KeywordTokenizerExample {
 			Document reviewDocument = new Document();
 			reviewDocument.add(new StringField(SimpleReview.USER_NAME_FIELD, sourceItem.getUserName(), Field.Store.YES));
 			reviewDocument.add(new StringField(SimpleReview.THUMB_FIELD, sourceItem.getThumb().name(), Field.Store.YES));
-			reviewDocument.add(new StringField(SimpleReview.ARTICLE_NAME_FIELD, sourceItem.getArticleName(), Field.Store.YES));
+			reviewDocument.add(new TextField(SimpleReview.ARTICLE_NAME_FIELD, sourceItem.getArticleName(), Field.Store.YES));
 			return reviewDocument;
 		}
 
