@@ -1,24 +1,15 @@
 package com.wilqor.workshop.bytebay.lucene.analysis;
 
-import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
-import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.indexing.CommentedReviewIndexer;
 import com.wilqor.workshop.bytebay.lucene.indexing.Indexer;
-import com.wilqor.workshop.bytebay.lucene.source.Source;
 import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReview;
 import org.apache.lucene.analysis.morfologik.MorfologikAnalyzer;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 public class PolishTokenFilterExample {
-
-    public static void main(String[] args) throws Exception {
-        MorfologikAnalyzer analyzer = new MorfologikAnalyzer();
-
-        Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.POLISH_ANALYZER_EXAMPLE);
-        try (Indexer<CommentedReview> indexer = new CommentedReviewIndexer(pathForIndex,
-                analyzer)) {
-            indexer.index(Source.COMMENTED_MODEL);
-        }
+    public static Indexer<CommentedReview> getIndexerForPath(Path pathForIndex) throws IOException {
+        return new CommentedReviewIndexer(pathForIndex, new MorfologikAnalyzer());
     }
 }

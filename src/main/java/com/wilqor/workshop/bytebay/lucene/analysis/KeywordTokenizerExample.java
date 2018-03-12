@@ -1,11 +1,11 @@
 package com.wilqor.workshop.bytebay.lucene.analysis;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Arrays;
-
+import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
+import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.indexing.Indexer;
 import com.wilqor.workshop.bytebay.lucene.indexing.SimpleReviewIndexer;
+import com.wilqor.workshop.bytebay.lucene.source.Source;
+import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -21,10 +21,9 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.IOUtils;
 
-import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
-import com.wilqor.workshop.bytebay.lucene.config.IndexType;
-import com.wilqor.workshop.bytebay.lucene.source.Source;
-import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Arrays;
 
 public class KeywordTokenizerExample {
 
@@ -72,9 +71,13 @@ public class KeywordTokenizerExample {
 		}
 	}
 
+	public static Indexer<SimpleReview> getIndexerForPath(Path pathForIndex) throws IOException {
+		return new SimpleReviewIndexer(pathForIndex, new KeywordTokenizingAnalyzer());
+	}
+
 	public static void main(String[] args) throws Exception {
 		Path pathForIndex = ConfigLoader.LOADER.getPathForIndex(IndexType.KEYWORD_TOKENIZER_EXAMPLE);
-		try (Indexer<SimpleReview> indexer = new SimpleReviewIndexer(pathForIndex, new KeywordTokenizingAnalyzer())) {
+		try (Indexer<SimpleReview> indexer = getIndexerForPath(pathForIndex)) {
 			indexer.index(Source.SIMPLE_MODEL);
 		}
 		try (SimpleReviewReader reader = new SimpleReviewReader(pathForIndex)) {

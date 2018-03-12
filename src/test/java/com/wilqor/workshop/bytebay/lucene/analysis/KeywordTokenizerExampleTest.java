@@ -1,24 +1,35 @@
 package com.wilqor.workshop.bytebay.lucene.analysis;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
-import java.nio.file.Path;
-
+import com.wilqor.workshop.bytebay.lucene.BaseReadingTest;
+import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
+import com.wilqor.workshop.bytebay.lucene.config.IndexType;
+import com.wilqor.workshop.bytebay.lucene.indexing.Indexer;
+import com.wilqor.workshop.bytebay.lucene.source.Source;
+import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
+import org.junit.Before;
 import org.junit.Test;
 
-import com.wilqor.workshop.bytebay.lucene.BaseReadingTest;
-import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
-import com.wilqor.workshop.bytebay.lucene.config.IndexType;
-import com.wilqor.workshop.bytebay.lucene.source.model.SimpleReview;
+import java.nio.file.Path;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class KeywordTokenizerExampleTest extends BaseReadingTest {
 	private static final int QUERY_MATCHES_LIMIT = 5;
+
+	@Override
+	@Before
+	public void setUp() throws Exception {
+		try (Indexer<SimpleReview> indexer = KeywordTokenizerExample.getIndexerForPath(provideDirectoryPath())) {
+			indexer.index(Source.SIMPLE_MODEL);
+		}
+		super.setUp();
+	}
 
 	@Override
 	protected Path provideDirectoryPath() {
