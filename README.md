@@ -6,7 +6,7 @@
 - IntelliJ IDEA
 
 ## Project setup
-Import Gradle project by pointing to `build.gradle` file in IDE.
+Import Gradle project by pointing to `build.gradle` file in IDE, make sure to have auto-import option selected.
 
 ## Useful commands
 ```
