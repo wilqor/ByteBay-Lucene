@@ -74,7 +74,7 @@ public class QueryParserTest extends BaseReadingTest {
 
     @Test
     public void shouldRetrieveAllReviewsByTermWithBothKindsOfWildcardInArticleNameField() throws Exception {
-        QueryParser queryParser = new QueryParser(DEFAULT_SEARCH_FIELD, queryAnalyzer);
+        QueryParser queryParser = new QueryParser(SimpleReview.ARTICLE_NAME_FIELD, queryAnalyzer);
         // TODO define query as specified in test method name
         Query query = queryParser.parse("put your query here");
         TopDocs topDocs = searcher.search(query, TOP_HITS_LIMIT);
