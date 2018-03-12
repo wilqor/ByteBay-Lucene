@@ -1,4 +1,4 @@
-package com.wilqor.workshop.bytebay.lucene.analysis;
+package com.wilqor.workshop.bytebay.lucene.indexing;
 
 import com.wilqor.workshop.bytebay.lucene.source.Source;
 

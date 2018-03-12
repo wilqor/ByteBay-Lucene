@@ -2,6 +2,7 @@ package com.wilqor.workshop.bytebay.lucene.analysis;
 
 import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
 import com.wilqor.workshop.bytebay.lucene.config.IndexType;
+import com.wilqor.workshop.bytebay.lucene.indexing.Indexer;
 import com.wilqor.workshop.bytebay.lucene.source.Source;
 import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReviewWithTimestamp;
 import org.apache.logging.log4j.LogManager;
