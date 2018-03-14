@@ -30,7 +30,7 @@ import static java.util.Collections.singletonList;
 @Component
 public class LuceneWikipediaSearcher implements WikipediaSearcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(LuceneWikipediaSearcher.class);
-    private static final int TOP_RESULTS_LIMIT = 100;
+    public static final int TOP_RESULTS_LIMIT = 100;
 
     private final Path directoryPath;
 
@@ -79,7 +79,7 @@ public class LuceneWikipediaSearcher implements WikipediaSearcher {
     // - which kind of fields to use?
     // - which object fields should be stored to allow retrieval?
     private Document mapToDocument(WikipediaPage wikipediaPage) {
-        throw new UnsupportedOperationException("Mapping Wikipedia PAge to document not yet implemented!");
+        throw new UnsupportedOperationException("Mapping Wikipedia Page to document not yet implemented!");
     }
 
     @Override
