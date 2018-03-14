@@ -9,8 +9,6 @@ import java.util.stream.Stream;
 
 
 public class WikipediaSource implements Source<WikipediaPage> {
-
-
     private final JsonSource<JsonWikipediaPage> jsonSource;
 
     public WikipediaSource(String fileName) {
@@ -27,7 +25,6 @@ public class WikipediaSource implements Source<WikipediaPage> {
 
     public static void main(String[] args) {
         List<WikipediaPage> reviews = Source.WIKIPEDIA_PAGE_MODEL.stream().limit(10).collect(Collectors.toList());
-
         reviews.forEach(System.out::println);
     }
 }

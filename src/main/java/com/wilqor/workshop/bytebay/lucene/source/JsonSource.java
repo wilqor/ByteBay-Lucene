@@ -1,8 +1,7 @@
 package com.wilqor.workshop.bytebay.lucene.source;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReviewWithTimestamp;
-import com.wilqor.workshop.bytebay.lucene.source.model.WikipediaPage;
+import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReview;
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
@@ -32,13 +31,10 @@ public class JsonSource<T> implements Source<T> {
     public Stream<T> stream() {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-
             Path dataSource = Paths.get(Thread.currentThread().getContextClassLoader().getResource(fileName).toURI());
-
             Stream<String> lines = fileName.endsWith(".bz2") ?
                     getBufferedReaderForCompressedFile(dataSource.toFile()).lines() :
                     Files.lines(dataSource);
-
             return lines
                     .map(line -> {
                         try {
@@ -56,12 +52,11 @@ public class JsonSource<T> implements Source<T> {
         FileInputStream fin = new FileInputStream(fileIn);
         BufferedInputStream bis = new BufferedInputStream(fin);
         CompressorInputStream input = new CompressorStreamFactory().createCompressorInputStream(bis);
-        BufferedReader br2 = new BufferedReader(new InputStreamReader(input));
-        return br2;
+        return new BufferedReader(new InputStreamReader(input));
     }
 
     public static void main(String[] args) {
-        List<CommentedReviewWithTimestamp> reviews = Source.COMMENTED_WITH_TIMESTAMP_MODEL.stream().limit(10).collect(Collectors.toList());
+        List<CommentedReview> reviews = Source.COMMENTED_MODEL.stream().limit(10).collect(Collectors.toList());
 
         reviews.forEach(review -> LOGGER.info("Loaded review: {}", review));
     }
