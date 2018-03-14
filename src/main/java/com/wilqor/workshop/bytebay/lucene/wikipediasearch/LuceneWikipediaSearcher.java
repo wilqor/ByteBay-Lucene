@@ -5,11 +5,17 @@ import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.source.Source;
 import com.wilqor.workshop.bytebay.lucene.source.model.WikipediaPage;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StoredField;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
@@ -22,10 +28,9 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.util.Collections.singletonList;
 
 @Component
 public class LuceneWikipediaSearcher implements WikipediaSearcher {
@@ -41,6 +46,7 @@ public class LuceneWikipediaSearcher implements WikipediaSearcher {
     @Override
     public void indexWikipedia() {
         // TODO use doIndex method to perform actual indexing
+        doIndex();
     }
 
     private void doIndex() {
@@ -72,24 +78,26 @@ public class LuceneWikipediaSearcher implements WikipediaSearcher {
     // - what kind of tokenization should be performed?
     // - what kind of token filtering should be performed?
     private Analyzer buildAnalyzer() {
-        throw new UnsupportedOperationException("Building Wikipedia analyzer not yet implemented!");
+        return new StandardAnalyzer();
     }
 
     // TODO map page to document
     // - which kind of fields to use?
     // - which object fields should be stored to allow retrieval?
     private Document mapToDocument(WikipediaPage wikipediaPage) {
-        throw new UnsupportedOperationException("Mapping Wikipedia Page to document not yet implemented!");
+        Document document = new Document();
+        document.add(new StoredField("description", wikipediaPage.getDescription()));
+        document.add(new StoredField("url", wikipediaPage.getUrl()));
+        document.add(new StoredField("link", wikipediaPage.getUrl()));
+        document.add(new TextField("text", wikipediaPage.getText(), Field.Store.NO));
+        document.add(new TextField("title", wikipediaPage.getTitle(), Field.Store.YES));
+        return document;
     }
 
     @Override
     public List<SearchResultEntry> search(String searchString) {
         // TODO use doSearch method to perform actual search
-        return singletonList(SearchResultEntry.builder()
-                .title("Napisz implementację")
-                .description("Uzupełnij implementację klasy LuceneWikipediaSearcher")
-                .link("https://lucene.apache.org/core/7_2_1/index.html")
-                .build());
+        return doSearch(searchString);
     }
 
     public List<SearchResultEntry> doSearch(String searchString) {
@@ -119,12 +127,25 @@ public class LuceneWikipediaSearcher implements WikipediaSearcher {
     // - how to parse search string?
     // - which fields should be used for search?
     private Query buildQuery(String searchString) {
-        throw new UnsupportedOperationException("Building query from string not yet implemented!");
+        HashMap<String, Float> boosts = new HashMap<>();
+        boosts.put("title", 100.0f);
+        boosts.put("text", 1.0f);
+        MultiFieldQueryParser queryParser = new MultiFieldQueryParser(new String[]{"title", "text"},
+                new StandardAnalyzer(), boosts);
+        try {
+            return queryParser.parse(searchString);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // TODO map from Document to a domain object to present to the user
     // - which fields in the index should be used?
     private SearchResultEntry mapToSearchResultEntry(Document document) {
-        throw new UnsupportedOperationException("Mapping document to search result entry not yet implemented!");
+        return SearchResultEntry.builder()
+                .link(document.get("link"))
+                .description(document.get("description"))
+                .title(document.get("title"))
+                .build();
     }
 }

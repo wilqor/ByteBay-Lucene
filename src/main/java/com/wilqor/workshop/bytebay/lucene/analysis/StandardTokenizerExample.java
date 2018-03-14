@@ -4,6 +4,7 @@ import com.wilqor.workshop.bytebay.lucene.indexing.CommentedReviewIndexer;
 import com.wilqor.workshop.bytebay.lucene.indexing.Indexer;
 import com.wilqor.workshop.bytebay.lucene.source.model.CommentedReview;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -13,7 +14,7 @@ public class StandardTokenizerExample {
     private static class StandardTokenizingAnalyzer extends Analyzer {
         @Override
         protected TokenStreamComponents createComponents(String fieldName) {
-            throw new UnsupportedOperationException("StandardTokenizingAnalyzer not yet implemented!");
+            return new TokenStreamComponents(new StandardTokenizer());
         }
     }
 

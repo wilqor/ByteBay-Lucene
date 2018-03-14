@@ -11,7 +11,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
 import org.junit.Before;
@@ -84,7 +83,7 @@ public class QueryParserTest extends BaseReadingTest {
     public void shouldRetrieveAllReviewsByTermWithBothKindsOfWildcardInArticleNameField() throws Exception {
         QueryParser queryParser = new QueryParser(SimpleReview.ARTICLE_NAME_FIELD, queryAnalyzer);
         // TODO write a query using '?' as well as '*' wild card characters for article name field
-        Query query = queryParser.parse("put your query here");
+        Query query = queryParser.parse("L?c*");
         printQueryWithStructure(query);
 
         TopDocs topDocs = searcher.search(query, TOP_HITS_LIMIT);
@@ -94,9 +93,9 @@ public class QueryParserTest extends BaseReadingTest {
 
     @Test
     public void shouldRetrieveFirstAndThirdReviewByBooleanQuery() throws Exception {
-        QueryParser queryParser = new QueryParser(DEFAULT_SEARCH_FIELD, queryAnalyzer);
+        QueryParser queryParser = new QueryParser(CommentedReview.COMMENT_FIELD, queryAnalyzer);
         // TODO write any kind of query that would match only first and third reviews
-        Query query = queryParser.parse("put your query here");
+        Query query = queryParser.parse("cud OR Serdecznie");
         printQueryWithStructure(query);
 
         TopDocs topDocs = searcher.search(query, TOP_HITS_LIMIT);
