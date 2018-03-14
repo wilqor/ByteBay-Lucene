@@ -6,6 +6,6 @@ luceneDirectory: 'Lucene'
 indexDirectories:
   WHITESPACE_TOKENIZER_EXAMPLE: 'whitespace_tokenizer'
   STANDARD_TOKENIZER_EXAMPLE: 'standard_tokenizer'
-  STOP_WORDS_TOKEN_FILTER_EXAMPLE: 'stop_words_token_filter'
+  STOP_FILTER_EXAMPLE: 'stop_filter'
   WIKIPEDIA_SEARCH: 'wikipedia'
 

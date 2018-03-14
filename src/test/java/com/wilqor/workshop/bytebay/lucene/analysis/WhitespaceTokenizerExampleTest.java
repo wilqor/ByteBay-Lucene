@@ -21,8 +21,8 @@ public class WhitespaceTokenizerExampleTest extends BaseReadingTest {
 
     @Override
     public void setUp() throws Exception {
-        try (Indexer<CommentedReview> indexer = WhitespaceTokenizerExample.getIndexerForPath(provideDirectoryPath())) {
-            indexer.index(Source.COMMENTED_MODEL);
+        try (Indexer<SimpleReview> indexer = WhitespaceTokenizerExample.getIndexerForPath(provideDirectoryPath())) {
+            indexer.index(Source.SIMPLE_MODEL);
         }
         super.setUp();
     }
@@ -30,6 +30,22 @@ public class WhitespaceTokenizerExampleTest extends BaseReadingTest {
     @Override
     protected Path provideDirectoryPath() {
         return ConfigLoader.LOADER.getPathForIndex(IndexType.WHITESPACE_TOKENIZER_EXAMPLE);
+    }
+
+    @Test
+    public void shouldHaveIndexedAllReviews() throws Exception {
+        Query query = new MatchAllDocsQuery();
+        TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
+
+        assertThat(topDocs.totalHits, is(5L));
+    }
+
+    @Test
+    public void shouldRetrieveReviewsByUserName() throws Exception {
+        Query query = new TermQuery(new Term(SimpleReview.USER_NAME_FIELD, "zbyszkop"));
+        TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
+
+        assertThat(topDocs.totalHits, is(3L));
     }
 
     @Test
@@ -88,45 +104,5 @@ public class WhitespaceTokenizerExampleTest extends BaseReadingTest {
         TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
 
         assertThat(topDocs.totalHits, is(3L));
-    }
-
-    @Test
-    public void shouldRetrieveReviewsForCommentTerm() throws Exception {
-        Query query = new TermQuery(new Term(CommentedReview.COMMENT_FIELD, "polecam"));
-        TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
-
-        assertThat(topDocs.totalHits, is(2L));
-    }
-
-    @Test
-    public void shouldRetrieveReviewsForEmoteInComment() throws Exception {
-        Query query = new TermQuery(new Term(CommentedReview.COMMENT_FIELD, ":)"));
-        TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
-
-        assertThat(topDocs.totalHits, is(1L));
-    }
-
-    @Test
-    public void shouldRetrieveZeroReviewsForTermBeforeHyphenInComment() throws Exception {
-        Query query = new TermQuery(new Term(CommentedReview.COMMENT_FIELD, "cud"));
-        TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
-
-        assertThat(topDocs.totalHits, is(0L));
-    }
-
-    @Test
-    public void shouldRetrieveZeroReviewsForTermAfterHyphenInComment() throws Exception {
-        Query query = new TermQuery(new Term(CommentedReview.COMMENT_FIELD, "miód"));
-        TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
-
-        assertThat(topDocs.totalHits, is(0L));
-    }
-
-    @Test
-    public void shouldRetrieveReviewsForTermWithHyphenInComment() throws Exception {
-        Query query = new TermQuery(new Term(CommentedReview.COMMENT_FIELD, "cud-miód"));
-        TopDocs topDocs = searcher.search(query, QUERY_MATCHES_LIMIT);
-
-        assertThat(topDocs.totalHits, is(1L));
     }
 }

@@ -30,57 +30,12 @@ import static java.util.Collections.singletonList;
 @Component
 public class LuceneWikipediaSearcher implements WikipediaSearcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(LuceneWikipediaSearcher.class);
+    private static final int TOP_RESULTS_LIMIT = 100;
 
     private final Path directoryPath;
 
     public LuceneWikipediaSearcher() {
         directoryPath = ConfigLoader.LOADER.getPathForIndex(IndexType.WIKIPEDIA_SEARCH);
-    }
-
-    @Override
-    public List<SearchResultEntry> search(String searchString) {
-        // TODO use doSearch method to perform actual search
-        return singletonList(SearchResultEntry.builder()
-                .title("Napisz implementację")
-                .description("Uzupełnij implementację klasy LuceneWikipediaSearcher")
-                .link("https://lucene.apache.org/core/7_2_1/index.html")
-                .build());
-    }
-
-    public List<SearchResultEntry> doSearch(String searchString) {
-        try (Directory directory = FSDirectory.open(directoryPath);
-             IndexReader reader = DirectoryReader.open(directory)) {
-            IndexSearcher searcher = new IndexSearcher(reader);
-            TopDocs topDocs = searcher.search(buildQuery(searchString), 100);
-            return Arrays.stream(topDocs.scoreDocs)
-                    .map(topDoc -> {
-                        try {
-                            Document document = searcher.doc(topDoc.doc);
-                            return mapToSearchResultEntry(document);
-                        } catch (IOException e) {
-                            LOGGER.warn("Retrieving document from index failed", e);
-                            throw new RuntimeException(e);
-                        }
-                    })
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            LOGGER.warn("Searching entries in index failed", e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    // TODO map from Document to a domain object to present to the user
-    // - which fields in the index should be used?
-    private SearchResultEntry mapToSearchResultEntry(Document document) {
-        throw new UnsupportedOperationException();
-    }
-
-    // TODO build Query from string
-    // - which parser to use?
-    // - how to parse search string?
-    // - which fields should be used for search?
-    private Query buildQuery(String searchString) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -113,17 +68,63 @@ public class LuceneWikipediaSearcher implements WikipediaSearcher {
         }
     }
 
-    // TODO map page to document
-    // - which kind of fields to use?
-    // - which object fields should be stored to allow retrieval?
-    private Document mapToDocument(WikipediaPage wikipediaPage) {
-        throw new UnsupportedOperationException();
-    }
-
     // TODO build analyzer chain
     // - what kind of tokenization should be performed?
     // - what kind of token filtering should be performed?
     private Analyzer buildAnalyzer() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Building Wikipedia analyzer not yet implemented!");
+    }
+
+    // TODO map page to document
+    // - which kind of fields to use?
+    // - which object fields should be stored to allow retrieval?
+    private Document mapToDocument(WikipediaPage wikipediaPage) {
+        throw new UnsupportedOperationException("Mapping Wikipedia PAge to document not yet implemented!");
+    }
+
+    @Override
+    public List<SearchResultEntry> search(String searchString) {
+        // TODO use doSearch method to perform actual search
+        return singletonList(SearchResultEntry.builder()
+                .title("Napisz implementację")
+                .description("Uzupełnij implementację klasy LuceneWikipediaSearcher")
+                .link("https://lucene.apache.org/core/7_2_1/index.html")
+                .build());
+    }
+
+    public List<SearchResultEntry> doSearch(String searchString) {
+        try (Directory directory = FSDirectory.open(directoryPath);
+             IndexReader reader = DirectoryReader.open(directory)) {
+            IndexSearcher searcher = new IndexSearcher(reader);
+            TopDocs topDocs = searcher.search(buildQuery(searchString), TOP_RESULTS_LIMIT);
+            return Arrays.stream(topDocs.scoreDocs)
+                    .map(topDoc -> {
+                        try {
+                            Document document = searcher.doc(topDoc.doc);
+                            return mapToSearchResultEntry(document);
+                        } catch (IOException e) {
+                            LOGGER.warn("Retrieving document from index failed", e);
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            LOGGER.warn("Searching entries in index failed", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    // TODO build Query from string
+    // - which parser to use?
+    // - how to parse search string?
+    // - which fields should be used for search?
+    private Query buildQuery(String searchString) {
+        throw new UnsupportedOperationException("Building query from string not yet implemented!");
+    }
+
+    // TODO map from Document to a domain object to present to the user
+    // - which fields in the index should be used?
+    private SearchResultEntry mapToSearchResultEntry(Document document) {
+        throw new UnsupportedOperationException("Mapping document to search result entry not yet implemented!");
     }
 }

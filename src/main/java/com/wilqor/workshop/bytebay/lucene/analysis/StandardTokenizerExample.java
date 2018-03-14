@@ -13,7 +13,7 @@ public class StandardTokenizerExample {
     private static class StandardTokenizingAnalyzer extends Analyzer {
         @Override
         protected TokenStreamComponents createComponents(String fieldName) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("StandardTokenizingAnalyzer not yet implemented!");
         }
     }
 

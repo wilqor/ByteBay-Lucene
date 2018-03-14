@@ -7,7 +7,7 @@ import org.apache.lucene.document.Document;
 import java.io.IOException;
 import java.nio.file.Path;
 
-// TODO implement indexer, which indexes user name and thumb as string, index article name and comment as text
+// TODO implement indexer, index user name and thumb as string, index article name and comment as text
 public class CommentedReviewIndexer extends BaseIndexer<CommentedReview> {
     public CommentedReviewIndexer(Path targetDirectory, Analyzer analyzer) throws IOException {
         super(targetDirectory, analyzer);
@@ -15,6 +15,6 @@ public class CommentedReviewIndexer extends BaseIndexer<CommentedReview> {
 
     @Override
     protected Document mapToDocument(CommentedReview sourceItem) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("Mapping documents in CommentedReviewIndexer not yet implemented!");
     }
 }
