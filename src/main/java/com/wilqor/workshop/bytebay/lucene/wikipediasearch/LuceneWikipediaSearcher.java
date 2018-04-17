@@ -1,15 +1,26 @@
 package com.wilqor.workshop.bytebay.lucene.wikipediasearch;
 
+import com.wilqor.workshop.bytebay.lucene.analysis.StandardTokenizerExample;
 import com.wilqor.workshop.bytebay.lucene.config.ConfigLoader;
 import com.wilqor.workshop.bytebay.lucene.config.IndexType;
 import com.wilqor.workshop.bytebay.lucene.source.Source;
 import com.wilqor.workshop.bytebay.lucene.source.model.WikipediaPage;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.LowerCaseFilter;
+import org.apache.lucene.analysis.morfologik.MorfologikFilter;
+import org.apache.lucene.analysis.ngram.NGramTokenFilter;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
+import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
+import org.apache.lucene.queryparser.flexible.standard.builders.StandardQueryBuilder;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
@@ -31,6 +42,9 @@ import static java.util.Collections.singletonList;
 public class LuceneWikipediaSearcher implements WikipediaSearcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(LuceneWikipediaSearcher.class);
     public static final int TOP_RESULTS_LIMIT = 100;
+    public static final String TITLE = "title";
+    public static final String DESCRIPTION = "description";
+    public static final String URL = "url";
 
     private final Path directoryPath;
 
@@ -40,7 +54,7 @@ public class LuceneWikipediaSearcher implements WikipediaSearcher {
 
     @Override
     public void indexWikipedia() {
-        // TODO use doIndex method to perform actual indexing
+        doIndex();
     }
 
     private void doIndex() {
@@ -72,24 +86,39 @@ public class LuceneWikipediaSearcher implements WikipediaSearcher {
     // - what kind of tokenization should be performed?
     // - what kind of token filtering should be performed?
     private Analyzer buildAnalyzer() {
-        throw new UnsupportedOperationException("Building Wikipedia analyzer not yet implemented!");
+         return new Analyzer(){
+            @Override
+            protected TokenStreamComponents createComponents(String fieldName) {
+                StandardTokenizer tokenizer = new StandardTokenizer();
+                return new TokenStreamComponents(tokenizer,
+                        new NGramTokenFilter(
+                            new MorfologikFilter(
+                                new LowerCaseFilter(
+                                        tokenizer
+                                 )
+                            ), 3, 8
+                        )
+                );
+            }
+        };
     }
 
     // TODO map page to document
     // - which kind of fields to use?
     // - which object fields should be stored to allow retrieval?
     private Document mapToDocument(WikipediaPage wikipediaPage) {
-        throw new UnsupportedOperationException("Mapping Wikipedia Page to document not yet implemented!");
+        Document document = new Document();
+        document.add(new TextField(TITLE, wikipediaPage.getTitle(), Field.Store.YES));
+        document.add(new TextField(DESCRIPTION, wikipediaPage.getDescription(), Field.Store.YES));
+        document.add(new StringField(URL, wikipediaPage.getUrl(), Field.Store.YES));
+
+        return document;
     }
 
     @Override
     public List<SearchResultEntry> search(String searchString) {
         // TODO use doSearch method to perform actual search
-        return singletonList(SearchResultEntry.builder()
-                .title("Napisz implementację")
-                .description("Uzupełnij implementację klasy LuceneWikipediaSearcher")
-                .link("https://lucene.apache.org/core/7_2_1/index.html")
-                .build());
+        return doSearch(searchString);
     }
 
     public List<SearchResultEntry> doSearch(String searchString) {
@@ -119,12 +148,21 @@ public class LuceneWikipediaSearcher implements WikipediaSearcher {
     // - how to parse search string?
     // - which fields should be used for search?
     private Query buildQuery(String searchString) {
-        throw new UnsupportedOperationException("Building query from string not yet implemented!");
+        StandardQueryParser standardQueryParser = new StandardQueryParser(buildAnalyzer());
+        try {
+            return standardQueryParser.parse(searchString, TITLE);
+        } catch (QueryNodeException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // TODO map from Document to a domain object to present to the user
     // - which fields in the index should be used?
     private SearchResultEntry mapToSearchResultEntry(Document document) {
-        throw new UnsupportedOperationException("Mapping document to search result entry not yet implemented!");
+       return SearchResultEntry.builder()
+               .link(document.get(URL))
+               .description(document.get(DESCRIPTION))
+               .title(document.get(TITLE))
+               .build();
     }
 }
